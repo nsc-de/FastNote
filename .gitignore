@@ -86,3 +86,9 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+
+# typedoc
+compiler/docs
+
+# build output
+lib
