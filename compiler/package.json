@@ -1,0 +1,9 @@
+{
+  "name": "fastnote-compiler",
+  "version": "0.1.0",
+  "description": "Compiler for fastnote language",
+  "main": "index.js",
+  "repository": "https://github.com/nsc-de/FastNote",
+  "author": "Nicolas Schmidt <https://github.com/nsc-de>",
+  "license": "BSD-3-Clause"
+}
