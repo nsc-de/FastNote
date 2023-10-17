@@ -2,6 +2,12 @@
   "folders": [
     // Root
     {
+      "name": "root",
+      "path": "../"
+    },
+
+    // Compiler
+    {
       "name": "compiler",
       "path": "../compiler/"
     }
@@ -10,13 +16,7 @@
     "files.exclude": {
       "node_modules/": true
     },
-    "jest.disabledWorkspaceFolders": [
-      "packages/core",
-      "packages/addon",
-      "packages/adapter",
-      "packages/worker",
-      "docs"
-    ],
+    "jest.disabledWorkspaceFolders": ["root"],
     "jest.jestCommandLine": "npx jest --config jest.config.js"
   },
 
