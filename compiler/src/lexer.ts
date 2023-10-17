@@ -1,6 +1,7 @@
 import { CharacterInputStream } from "./characters";
+import { Token, Tokens } from "./tokens";
 
-class Lexer {
+export class Lexer {
   constructor(readonly source: CharacterInputStream) {}
 
   next() {
@@ -8,31 +9,42 @@ class Lexer {
 
     if (char === "#") return this.heading();
     if (char === "\n") return this.newline();
+
+    // PASSTHROUGH
   }
 
-  heading() {
+  heading(): Token {
     let value = "";
+
+    const col = this.source.col;
+    const line = this.source.line;
+    const index = this.source.index;
 
     while (this.source.peek() === "#") {
       value += this.source.next();
     }
 
     return {
-      type: "heading",
+      type: Tokens.heading,
       value,
-      line: this.source.line,
-      col: this.source.col,
-      index: this.source.index,
+      line,
+      col,
+      index,
     };
   }
 
-  newline() {
+  newline(): Token {
+    const col = this.source.col;
+    const line = this.source.line;
+    const index = this.source.index;
+
+    this.source.next();
     return {
-      type: "newline",
+      type: Tokens.newline,
       value: "\n",
-      line: this.source.line,
-      col: this.source.col,
-      index: this.source.index,
+      line,
+      col,
+      index,
     };
   }
 }

@@ -5,6 +5,7 @@ export enum Tokens {
   float = "float",
   identifier = "identifier",
   heading = "heading",
+  newline = "newline",
 }
 
 export type TokenType = Tokens;

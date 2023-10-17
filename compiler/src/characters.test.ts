@@ -3,7 +3,7 @@ import { createCharacterInputStream } from "./characters";
 describe("createCharacterInputStream", () => {
   describe("construct", () => {
     it("should return a token stream", () => {
-      const stream = createCharacterInputStream("");
+      createCharacterInputStream("");
     });
   });
   it("should be eof if empty", () => {
@@ -59,10 +59,10 @@ describe("createCharacterInputStream", () => {
 
   it("check col", () => {
     const stream = createCharacterInputStream("ab");
-    expect(stream.col).toBe(0);
-    stream.next();
     expect(stream.col).toBe(1);
     stream.next();
     expect(stream.col).toBe(2);
+    stream.next();
+    expect(stream.col).toBe(3);
   });
 });

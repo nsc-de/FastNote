@@ -15,7 +15,7 @@ export function createCharacterInputStream(
 ): CharacterInputStream {
   let index = 0;
   let line = 1;
-  let col = 0;
+  let col = 1;
 
   return {
     get index() {
@@ -36,7 +36,7 @@ export function createCharacterInputStream(
       const char = input.charAt(index++);
       if (char === "\n") {
         line++;
-        col = 0;
+        col = 1;
       } else {
         col++;
       }
