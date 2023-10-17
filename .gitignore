@@ -95,3 +95,6 @@ lib
 
 # turborepo
 .turbo
+
+# sarif
+*.sarif
