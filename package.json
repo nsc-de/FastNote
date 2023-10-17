@@ -4,7 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "turbo test"
+    "build": "turbo run build",
+    "docs": "npm run build && npm run docs:prepare && npm run docs:build",
+    "docs:build": "cd docs && npm run build && cd ..",
+    "docs:prepare": "turbo typedoc",
+    "lint": "turbo run lint",
+    "test": "turbo run test -- ",
+    "typedoc": "turbo run typedoc"
   },
   "repository": {
     "type": "git",

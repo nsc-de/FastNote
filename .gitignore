@@ -92,3 +92,6 @@ compiler/docs
 
 # build output
 lib
+
+# turborepo
+.turbo
