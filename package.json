@@ -1,0 +1,25 @@
+{
+  "name": "fastnote",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "turbo test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nsc-de/FastNote.git"
+  },
+  "author": "Nicolas Schmidt <https://github.com/nsc-de/>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/nsc-de/FastNote/issues"
+  },
+  "homepage": "https://github.com/nsc-de/FastNote#readme",
+  "workspaces": [
+    "compiler"
+  ],
+  "dependencies": {
+    "turbo": "^1.10.15"
+  }
+}
