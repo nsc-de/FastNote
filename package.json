@@ -1,0 +1,36 @@
+{
+  "name": "fastnote",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "turbo run build",
+    "docs": "npm run build && npm run docs:prepare && npm run docs:build",
+    "docs:build": "cd docs && npm run build && cd ..",
+    "docs:prepare": "turbo typedoc",
+    "lint": "turbo run lint",
+    "test": "turbo run test -- ",
+    "typedoc": "turbo run typedoc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nsc-de/FastNote.git"
+  },
+  "author": "Nicolas Schmidt <https://github.com/nsc-de/>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/nsc-de/FastNote/issues"
+  },
+  "homepage": "https://github.com/nsc-de/FastNote#readme",
+  "workspaces": [
+    "compiler"
+  ],
+  "devDependencies": {
+    "@microsoft/eslint-formatter-sarif": "^3.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.8.0",
+    "@typescript-eslint/parser": "^6.8.0",
+    "eslint": "^8.50.0",
+    "eslint-plugin-jest": "^27.4.0",
+    "turbo": "^1.10.15"
+  }
+}
