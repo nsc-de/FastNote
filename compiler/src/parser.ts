@@ -31,8 +31,10 @@ export class Parser {
   parseBoldNode(): BoldNode {
     const start = this.tokens.next();
     const children: CharacterNode[] = [];
-    while (start.type !== this.tokens.peek().type && !this.tokens.eof())
-      children.push(this.parseTextWrapperNode());
+    while (!this.tokens.eof() && start.type !== this.tokens.peek().type)
+      children.push(this.parseTextBasedNode());
+
+    if (!this.tokens.eof()) this.tokens.next();
 
     return new BoldNode(
       children.length === 1
@@ -46,8 +48,10 @@ export class Parser {
   parseItalicNode(): ItalicNode {
     const start = this.tokens.next();
     const children: CharacterNode[] = [];
-    while (start.type !== this.tokens.peek().type && !this.tokens.eof())
-      children.push(this.parseTextWrapperNode());
+    while (!this.tokens.eof() && start.type !== this.tokens.peek().type)
+      children.push(this.parseTextBasedNode());
+
+    if (!this.tokens.eof()) this.tokens.next();
 
     return new ItalicNode(
       children.length === 1
@@ -61,8 +65,10 @@ export class Parser {
   parseUnderlineNode(): UnderlineNode {
     const start = this.tokens.next();
     const children: CharacterNode[] = [];
-    while (start !== this.tokens.peek() && !this.tokens.eof())
-      children.push(this.parseTextWrapperNode());
+    while (!this.tokens.eof() && start !== this.tokens.peek())
+      children.push(this.parseTextBasedNode());
+
+    if (!this.tokens.eof()) this.tokens.next();
 
     return new UnderlineNode(
       children.length === 1
@@ -76,8 +82,10 @@ export class Parser {
   parseStrikethroughNode(): StrikethroughNode {
     const start = this.tokens.next();
     const children: CharacterNode[] = [];
-    while (start.type !== this.tokens.peek().type && !this.tokens.eof())
-      children.push(this.parseTextWrapperNode());
+    while (!this.tokens.eof() && start.type !== this.tokens.peek().type)
+      children.push(this.parseTextBasedNode());
+
+    if (!this.tokens.eof()) this.tokens.next();
 
     return new StrikethroughNode(
       children.length === 1
@@ -131,6 +139,7 @@ export abstract class Node {
 }
 
 export class Tree {
+  readonly type = "tree";
   constructor(public readonly children: Node[]) {}
 }
 
@@ -139,48 +148,56 @@ export abstract class CharacterNode {
 }
 
 export class TextWrapperNode extends CharacterNode {
+  readonly type = "text";
   constructor(readonly text: string) {
     super();
   }
 }
 
 export class BoldNode extends CharacterNode {
+  readonly type = "bold";
   constructor(readonly text: CharacterNode) {
     super();
   }
 }
 
 export class ItalicNode extends CharacterNode {
+  readonly type = "italic";
   constructor(readonly text: CharacterNode) {
     super();
   }
 }
 
 export class UnderlineNode extends CharacterNode {
+  readonly type = "underline";
   constructor(readonly text: CharacterNode) {
     super();
   }
 }
 
 export class StrikethroughNode extends CharacterNode {
+  readonly type = "strikethrough";
   constructor(readonly text: CharacterNode) {
     super();
   }
 }
 
 export class JoinNode extends CharacterNode {
+  readonly type = "join";
   constructor(readonly text: CharacterNode[]) {
     super();
   }
 }
 
 export class ParagraphNode extends Node {
+  readonly type = "paragraph";
   constructor(readonly text: CharacterNode) {
     super();
   }
 }
 
 export class HeadingNode extends Node {
+  readonly type = "heading";
   constructor(readonly level: number, readonly text: CharacterNode) {
     super();
   }

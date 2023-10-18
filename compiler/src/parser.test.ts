@@ -260,6 +260,108 @@ describe("Parser", () => {
         expect(joinNode.text[1]).toBeInstanceOf(TextWrapperNode);
         expect((joinNode.text[1] as TextWrapperNode).text).toBe("(");
       });
+
+      it("test nested italic", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.exponent,
+            value: "**",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.asterisk,
+            value: "*",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.openBrace,
+            value: "(",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.asterisk,
+            value: "*",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.exponent,
+            value: "**",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+
+        const parser = new Parser(tokens);
+        const node = parser.parseTextBasedNode();
+
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(BoldNode);
+        const boldNode = node as BoldNode;
+        expect(boldNode.text).toBeInstanceOf(ItalicNode);
+        const italicNode = boldNode.text as ItalicNode;
+        expect(italicNode.text).toBeInstanceOf(TextWrapperNode);
+        expect((italicNode.text as TextWrapperNode).text).toBe("(");
+      });
+
+      it("test nested strikethrough", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.exponent,
+            value: "**",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.minus,
+            value: "-",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.openBrace,
+            value: "(",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.minus,
+            value: "-",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.exponent,
+            value: "**",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+
+        const parser = new Parser(tokens);
+        const node = parser.parseTextBasedNode();
+
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(BoldNode);
+        const boldNode = node as BoldNode;
+        expect(boldNode.text).toBeInstanceOf(StrikethroughNode);
+        const strikethroughNode = boldNode.text as StrikethroughNode;
+        expect(strikethroughNode.text).toBeInstanceOf(TextWrapperNode);
+        expect((strikethroughNode.text as TextWrapperNode).text).toBe("(");
+      });
     });
 
     describe("italic", () => {
@@ -440,6 +542,108 @@ describe("Parser", () => {
         expect(joinNode.text[1]).toBeInstanceOf(TextWrapperNode);
         expect((joinNode.text[1] as TextWrapperNode).text).toBe("(");
       });
+
+      it("test nested bold", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.asterisk,
+            value: "*",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.exponent,
+            value: "**",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.openBrace,
+            value: "(",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.exponent,
+            value: "**",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.asterisk,
+            value: "*",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+
+        const parser = new Parser(tokens);
+        const node = parser.parseTextBasedNode();
+
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(ItalicNode);
+        const italicNode = node as ItalicNode;
+        expect(italicNode.text).toBeInstanceOf(BoldNode);
+        const boldNode = italicNode.text as BoldNode;
+        expect(boldNode.text).toBeInstanceOf(TextWrapperNode);
+        expect((boldNode.text as TextWrapperNode).text).toBe("(");
+      });
+
+      it("test nested strikethrough", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.asterisk,
+            value: "*",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.minus,
+            value: "-",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.openBrace,
+            value: "(",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.minus,
+            value: "-",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.asterisk,
+            value: "*",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+
+        const parser = new Parser(tokens);
+        const node = parser.parseTextBasedNode();
+
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(ItalicNode);
+        const italicNode = node as ItalicNode;
+        expect(italicNode.text).toBeInstanceOf(StrikethroughNode);
+        const strikethroughNode = italicNode.text as StrikethroughNode;
+        expect(strikethroughNode.text).toBeInstanceOf(TextWrapperNode);
+        expect((strikethroughNode.text as TextWrapperNode).text).toBe("(");
+      });
     });
 
     describe("strikethrough", () => {
@@ -619,6 +823,109 @@ describe("Parser", () => {
         expect((joinNode.text[0] as TextWrapperNode).text).toBe("(");
         expect(joinNode.text[1]).toBeInstanceOf(TextWrapperNode);
         expect((joinNode.text[1] as TextWrapperNode).text).toBe("(");
+      });
+
+      it("test nested bold", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.minus,
+            value: "-",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.exponent,
+            value: "**",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.openBrace,
+            value: "(",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.exponent,
+            value: "**",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.minus,
+            value: "-",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+
+        const parser = new Parser(tokens);
+        const node = parser.parseTextBasedNode();
+
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(StrikethroughNode);
+        const strikeThroughNode = node as StrikethroughNode;
+        expect(strikeThroughNode.text).toBeInstanceOf(BoldNode);
+        const boldNode = strikeThroughNode.text as BoldNode;
+        expect(boldNode.text).toBeInstanceOf(TextWrapperNode);
+        expect((boldNode.text as TextWrapperNode).text).toBe("(");
+      });
+
+      it("test nested italic", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.minus,
+            value: "-",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.asterisk,
+            value: "*",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.openBrace,
+            value: "(",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.asterisk,
+            value: "*",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.minus,
+            value: "-",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+
+        const parser = new Parser(tokens);
+        const node = parser.parseTextBasedNode();
+
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(StrikethroughNode);
+        const strikeThroughNode = node as StrikethroughNode;
+        expect(strikeThroughNode.text).toBeInstanceOf(ItalicNode);
+
+        const italicNode = strikeThroughNode.text as ItalicNode;
+        expect(italicNode.text).toBeInstanceOf(TextWrapperNode);
+        expect((italicNode.text as TextWrapperNode).text).toBe("(");
       });
     });
   });
