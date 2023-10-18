@@ -1,5 +1,6 @@
 import {
   BoldNode,
+  HeadingNode,
   ItalicNode,
   JoinNode,
   Parser,
@@ -926,6 +927,204 @@ describe("Parser", () => {
         const italicNode = strikeThroughNode.text as ItalicNode;
         expect(italicNode.text).toBeInstanceOf(TextWrapperNode);
         expect((italicNode.text as TextWrapperNode).text).toBe("(");
+      });
+    });
+  });
+
+  describe("parseNode", () => {
+    describe("heading", () => {
+      it("should parse heading", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.heading,
+            value: "#",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.passthrough,
+            value: "hello",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+        const parser = new Parser(tokens);
+        const node = parser.parseNode();
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(HeadingNode);
+        expect(((node as HeadingNode).text as TextWrapperNode).text).toEqual(
+          "hello"
+        );
+      });
+
+      it("should parse heading with newline", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.heading,
+            value: "#",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.passthrough,
+            value: "hello",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.newline,
+            value: "\n",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.passthrough,
+            value: "hello",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+        const parser = new Parser(tokens);
+        const node = parser.parseNode();
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(HeadingNode);
+        expect(((node as HeadingNode).text as TextWrapperNode).text).toEqual(
+          "hello"
+        );
+      });
+
+      it("should parse heading with bold content", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.heading,
+            value: "#",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.exponent,
+            value: "**",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.passthrough,
+            value: "hello",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.exponent,
+            value: "**",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+        const parser = new Parser(tokens);
+        const node = parser.parseNode();
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(HeadingNode);
+        expect((node as HeadingNode).text).toBeInstanceOf(BoldNode);
+        expect(
+          (((node as HeadingNode).text as BoldNode).text as TextWrapperNode)
+            .text
+        ).toEqual("hello");
+      });
+
+      it("should parse heading with italic content", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.heading,
+            value: "#",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.asterisk,
+            value: "*",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.passthrough,
+            value: "hello",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.asterisk,
+            value: "*",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+        const parser = new Parser(tokens);
+        const node = parser.parseNode();
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(HeadingNode);
+        expect((node as HeadingNode).text).toBeInstanceOf(ItalicNode);
+        expect(
+          (((node as HeadingNode).text as ItalicNode).text as TextWrapperNode)
+            .text
+        ).toEqual("hello");
+      });
+
+      it("should parse heading with strikethrough content", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.heading,
+            value: "#",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.minus,
+            value: "-",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.passthrough,
+            value: "hello",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.minus,
+            value: "-",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+        const parser = new Parser(tokens);
+        const node = parser.parseNode();
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(HeadingNode);
+        expect((node as HeadingNode).text).toBeInstanceOf(StrikethroughNode);
+        expect(
+          (
+            ((node as HeadingNode).text as StrikethroughNode)
+              .text as TextWrapperNode
+          ).text
+        ).toEqual("hello");
       });
     });
   });

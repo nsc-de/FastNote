@@ -124,8 +124,8 @@ export class Parser {
   parseHeadingNode(): HeadingNode {
     const start = this.tokens.next();
     const children: CharacterNode[] = [];
-    while (start !== this.tokens.peek())
-      children.push(this.parseTextWrapperNode());
+    while (!this.tokens.eof() && this.tokens.peek().type !== Tokens.newline)
+      children.push(this.parseTextBasedNode());
 
     return new HeadingNode(
       start.value.length,
