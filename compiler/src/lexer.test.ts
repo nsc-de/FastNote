@@ -237,6 +237,18 @@ describe("Lexer", () => {
         index: 0,
       });
     });
+
+    it("lex dollar-descriptor", () => {
+      const lexer = new Lexer(createCharacterInputStream("$a"));
+      const token = lexer.next();
+      expect(token).toEqual({
+        type: "dollar",
+        value: "$a",
+        line: 1,
+        col: 1,
+        index: 0,
+      });
+    });
   });
 
   describe("backslash", () => {

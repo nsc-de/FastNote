@@ -293,9 +293,11 @@ export class Lexer {
     const line = this.source.line;
     const index = this.source.index;
 
-    while (this.source.peek() === "$") {
+    if (this.source.peek() === "$") {
       value += this.source.next();
     }
+
+    while (/[\w]/.test(this.source.peek())) value += this.source.next();
 
     this.tokenBuffer.push({
       type: Tokens.dollar,
@@ -309,19 +311,13 @@ export class Lexer {
   }
 
   backslash() {
-    let value = "";
-
     const col = this.source.col;
     const line = this.source.line;
     const index = this.source.index;
 
-    while (this.source.peek() === "\\") {
-      value += this.source.next();
-    }
-
     this.tokenBuffer.push({
       type: Tokens.backslash,
-      value,
+      value: "\\",
       line,
       col,
       index,
@@ -331,19 +327,13 @@ export class Lexer {
   }
 
   forwardslash() {
-    let value = "";
-
     const col = this.source.col;
     const line = this.source.line;
     const index = this.source.index;
 
-    while (this.source.peek() === "/") {
-      value += this.source.next();
-    }
-
     this.tokenBuffer.push({
       type: Tokens.forwardslash,
-      value,
+      value: "/",
       line,
       col,
       index,
