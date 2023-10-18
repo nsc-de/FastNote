@@ -18,7 +18,7 @@ You can use formatting to highlight text. Formatting is defined by a `*` followe
 ```markdown
 _Italic text_
 **Bold text**
-**_Italic and bold text_**
+***Italic and bold text***
 ~Strikethrough text~
 ```
 
