@@ -46,7 +46,7 @@ export class Parser {
   parseItalicNode(): ItalicNode {
     const start = this.tokens.next();
     const children: CharacterNode[] = [];
-    while (start !== this.tokens.peek() && !this.tokens.eof())
+    while (start.type !== this.tokens.peek().type && !this.tokens.eof())
       children.push(this.parseTextWrapperNode());
 
     return new ItalicNode(
@@ -76,7 +76,7 @@ export class Parser {
   parseStrikethroughNode(): StrikethroughNode {
     const start = this.tokens.next();
     const children: CharacterNode[] = [];
-    while (start !== this.tokens.peek() && !this.tokens.eof())
+    while (start.type !== this.tokens.peek().type && !this.tokens.eof())
       children.push(this.parseTextWrapperNode());
 
     return new StrikethroughNode(
