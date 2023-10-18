@@ -43,6 +43,50 @@ app.get("/formula/:formula/:format", (req, res) => {
     return;
   }
 
+  if (format === "html") {
+    (async () => {
+      try {
+        const result = await render({
+          math: formula,
+          format: "TeX",
+          html: true,
+        });
+
+        res
+          .status(200)
+          .send(
+            "<!DOCTYPE html><html><head><meta charset='utf-8'><link rel='stylesheet' href='./css'/><title>MathJax Node</title><style>body {font-size: 20px;}</style></head><body>" +
+              result.html +
+              "</body></html>"
+          );
+      } catch (e) {
+        console.error(e);
+        res.status(500).send("Internal server error");
+      }
+    })();
+
+    return;
+  }
+
+  if (format === "css") {
+    (async () => {
+      try {
+        const result = await render({
+          math: formula,
+          format: "TeX",
+          html: true,
+        });
+
+        res.status(200).send(result.css);
+      } catch (e) {
+        console.error(e);
+        res.status(500).send("Internal server error");
+      }
+    })();
+
+    return;
+  }
+
   res.status(400).send("Invalid format");
 });
 
