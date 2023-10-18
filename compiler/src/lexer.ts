@@ -338,10 +338,43 @@ export class Lexer {
       value += this.source.next();
     }
 
+    if (this.source.peek() === "$") {
+      return this.doubleDollar(col, line, index);
+    }
+
     while (/[\w]/.test(this.source.peek())) value += this.source.next();
+
+    if (value === "$") {
+      this.tokenBuffer.push({
+        type: Tokens.passthrough,
+        value: "$",
+        line,
+        col,
+        index,
+      });
+      return this.popBuffer();
+    }
 
     this.tokenBuffer.push({
       type: Tokens.dollar,
+      value,
+      line,
+      col,
+      index,
+    });
+
+    return this.popBuffer();
+  }
+
+  doubleDollar(col: number, line: number, index: number) {
+    let value = "$$";
+
+    this.source.next();
+
+    while (/[\w]/.test(this.source.peek())) value += this.source.next();
+
+    this.tokenBuffer.push({
+      type: Tokens.doubleDollar,
       value,
       line,
       col,

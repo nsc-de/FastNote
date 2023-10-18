@@ -26,6 +26,7 @@ export enum Tokens {
   tilde = "tilde", // ~
 
   dollar = "dollar", // $ or $aaa
+  doubleDollar = "doubleDollar", // $$ or $$aaa
   and = "and", // &
   backslash = "backslash", // \
   forwardslash = "forwardslash", // /

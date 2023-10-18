@@ -269,7 +269,7 @@ describe("Lexer", () => {
       const lexer = new Lexer(createCharacterInputStream("$"));
       const token = lexer.next();
       expect(token).toEqual({
-        type: "dollar",
+        type: "passthrough",
         value: "$",
         line: 1,
         col: 1,
@@ -283,6 +283,32 @@ describe("Lexer", () => {
       expect(token).toEqual({
         type: "dollar",
         value: "$a",
+        line: 1,
+        col: 1,
+        index: 0,
+      });
+    });
+  });
+
+  describe("double_dollar", () => {
+    it("lex dollar", () => {
+      const lexer = new Lexer(createCharacterInputStream("$$"));
+      const token = lexer.next();
+      expect(token).toEqual({
+        type: "doubleDollar",
+        value: "$$",
+        line: 1,
+        col: 1,
+        index: 0,
+      });
+    });
+
+    it("lex dollar-descriptor", () => {
+      const lexer = new Lexer(createCharacterInputStream("$$a"));
+      const token = lexer.next();
+      expect(token).toEqual({
+        type: "doubleDollar",
+        value: "$$a",
         line: 1,
         col: 1,
         index: 0,
