@@ -157,6 +157,8 @@ export class Parser {
     while (!this.tokens.eof() && this.tokens.peek().type !== Tokens.newline)
       children.push(this.parseTextBasedNode());
 
+    if (!this.tokens.eof()) this.tokens.next();
+
     return new ParagraphNode(
       children.length === 1 ? children[0] : new JoinNode(children)
     );
@@ -177,6 +179,8 @@ export class Parser {
     while (!this.tokens.eof() && this.tokens.peek().type !== Tokens.newline)
       children.push(this.parseTextBasedNode());
 
+    if (!this.tokens.eof()) this.tokens.next();
+
     return new HeadingNode(
       start.value.length,
       children.length === 1 ? children[0] : new JoinNode(children)
@@ -186,17 +190,21 @@ export class Parser {
 
 export abstract class Node {
   constructor() {}
+  abstract json(): unknown;
 }
 
 export class Tree {
-  readonly type = "tree";
   constructor(public readonly children: Node[]) {}
+  json(): unknown {
+    return { children: this.children.map((c) => c.json()), type: "document" };
+  }
 }
 
 export abstract class CharacterNode {
   constructor() {}
   abstract get value(): string;
   abstract get code(): string;
+  abstract json(): unknown;
 }
 
 export class TextWrapperNode extends CharacterNode {
@@ -211,6 +219,13 @@ export class TextWrapperNode extends CharacterNode {
 
   get code() {
     return this.text;
+  }
+
+  json() {
+    return {
+      type: "text",
+      text: this.text,
+    };
   }
 }
 
@@ -227,6 +242,13 @@ export class BoldNode extends CharacterNode {
   get code() {
     return `**${this.text.code}**`;
   }
+
+  json() {
+    return {
+      type: "bold",
+      text: this.text.json(),
+    };
+  }
 }
 
 export class ItalicNode extends CharacterNode {
@@ -241,6 +263,13 @@ export class ItalicNode extends CharacterNode {
 
   get code() {
     return `*${this.text.code}*`;
+  }
+
+  json() {
+    return {
+      type: "italic",
+      text: this.text.json(),
+    };
   }
 }
 
@@ -257,6 +286,13 @@ export class UnderlineNode extends CharacterNode {
   get code() {
     return `_${this.text.code}_`;
   }
+
+  json() {
+    return {
+      type: "underline",
+      text: this.text.json(),
+    };
+  }
 }
 
 export class StrikethroughNode extends CharacterNode {
@@ -271,6 +307,13 @@ export class StrikethroughNode extends CharacterNode {
 
   get code() {
     return `~~${this.text.code}~~`;
+  }
+
+  json() {
+    return {
+      type: "strikethrough",
+      text: this.text.json(),
+    };
   }
 }
 
@@ -287,6 +330,13 @@ export class JoinNode extends CharacterNode {
   get code() {
     return this.text.map((t) => t.code).join("");
   }
+
+  json() {
+    return {
+      type: "join",
+      text: this.text.map((t) => t.json()),
+    };
+  }
 }
 
 export class HyperlinkNode extends CharacterNode {
@@ -302,6 +352,14 @@ export class HyperlinkNode extends CharacterNode {
   get code() {
     return `[${this.text.code}](${this.url})`;
   }
+
+  json() {
+    return {
+      type: "hyperlink",
+      text: this.text.json(),
+      url: this.url,
+    };
+  }
 }
 
 export class ParagraphNode extends Node {
@@ -309,11 +367,26 @@ export class ParagraphNode extends Node {
   constructor(readonly text: CharacterNode) {
     super();
   }
+
+  json() {
+    return {
+      type: "paragraph",
+      text: this.text.json(),
+    };
+  }
 }
 
 export class HeadingNode extends Node {
   readonly type = "heading";
   constructor(readonly level: number, readonly text: CharacterNode) {
     super();
+  }
+
+  json() {
+    return {
+      type: "heading",
+      level: this.level,
+      text: this.text.json(),
+    };
   }
 }

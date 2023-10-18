@@ -18,7 +18,7 @@ describe("Parser", () => {
     expect(parser).toBeDefined();
   });
 
-  describe("parseTextBasedNode()", () => {
+  describe("parseTextBasedNode", () => {
     describe("regular", () => {
       it("should parse single passthrough", () => {
         const tokens = createTokenStream([
@@ -1791,6 +1791,418 @@ describe("Parser", () => {
               .text as TextWrapperNode
           ).text
         ).toEqual("hello");
+      });
+    });
+  });
+
+  describe("parse", () => {
+    it("should parse empty document", () => {
+      const tokens = createTokenStream([]);
+      const parser = new Parser(tokens);
+      const node = parser.parse();
+      expect(node).toBeDefined();
+      expect(node.json()).toEqual({
+        type: "document",
+        children: [],
+      });
+    });
+
+    it("heading", () => {
+      const tokens = createTokenStream([
+        {
+          type: Tokens.heading,
+          value: "#",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+        {
+          type: Tokens.passthrough,
+          value: "hello",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+      ]);
+      const parser = new Parser(tokens);
+      const node = parser.parse();
+      expect(node).toBeDefined();
+      expect(node.json()).toEqual({
+        type: "document",
+        children: [
+          {
+            type: "heading",
+            level: 1,
+            text: {
+              type: "text",
+              text: "hello",
+            },
+          },
+        ],
+      });
+    });
+
+    it("paragraph", () => {
+      const tokens = createTokenStream([
+        {
+          type: Tokens.passthrough,
+          value: "hello",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+      ]);
+      const parser = new Parser(tokens);
+      const node = parser.parse();
+      expect(node).toBeDefined();
+      expect(node.json()).toEqual({
+        type: "document",
+        children: [
+          {
+            type: "paragraph",
+            text: {
+              type: "text",
+              text: "hello",
+            },
+          },
+        ],
+      });
+    });
+
+    it("paragraph with newline", () => {
+      const tokens = createTokenStream([
+        {
+          type: Tokens.passthrough,
+          value: "hello",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+        {
+          type: Tokens.newline,
+          value: "\n",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+        {
+          type: Tokens.passthrough,
+          value: "hello",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+      ]);
+      const parser = new Parser(tokens);
+      const node = parser.parse();
+      expect(node).toBeDefined();
+      expect(node.json()).toEqual({
+        type: "document",
+        children: [
+          {
+            type: "paragraph",
+            text: {
+              type: "text",
+              text: "hello",
+            },
+          },
+          {
+            type: "paragraph",
+            text: {
+              type: "text",
+              text: "hello",
+            },
+          },
+        ],
+      });
+    });
+
+    it("paragraph with bold content", () => {
+      const tokens = createTokenStream([
+        {
+          type: Tokens.exponent,
+          value: "**",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+        {
+          type: Tokens.passthrough,
+          value: "hello",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+
+        {
+          type: Tokens.exponent,
+          value: "**",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+      ]);
+      const parser = new Parser(tokens);
+
+      const node = parser.parse();
+      expect(node).toBeDefined();
+      expect(node.json()).toEqual({
+        type: "document",
+        children: [
+          {
+            type: "paragraph",
+            text: {
+              type: "bold",
+              text: {
+                type: "text",
+                text: "hello",
+              },
+            },
+          },
+        ],
+      });
+    });
+
+    it("paragraph with italic content", () => {
+      const tokens = createTokenStream([
+        {
+          type: Tokens.asterisk,
+          value: "*",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+        {
+          type: Tokens.passthrough,
+          value: "hello",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+
+        {
+          type: Tokens.asterisk,
+          value: "*",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+      ]);
+      const parser = new Parser(tokens);
+
+      const node = parser.parse();
+      expect(node).toBeDefined();
+      expect(node.json()).toEqual({
+        type: "document",
+        children: [
+          {
+            type: "paragraph",
+            text: {
+              type: "italic",
+              text: {
+                type: "text",
+                text: "hello",
+              },
+            },
+          },
+        ],
+      });
+    });
+
+    it("paragraph with strikethrough content", () => {
+      const tokens = createTokenStream([
+        {
+          type: Tokens.tilde,
+          value: "~",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+        {
+          type: Tokens.passthrough,
+          value: "hello",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+
+        {
+          type: Tokens.tilde,
+          value: "~",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+      ]);
+      const parser = new Parser(tokens);
+
+      const node = parser.parse();
+      expect(node).toBeDefined();
+      expect(node.json()).toEqual({
+        type: "document",
+        children: [
+          {
+            type: "paragraph",
+            text: {
+              type: "strikethrough",
+              text: {
+                type: "text",
+                text: "hello",
+              },
+            },
+          },
+        ],
+      });
+    });
+
+    it("paragraph with hyperlink", () => {
+      const tokens = createTokenStream([
+        {
+          type: Tokens.openBracket,
+          value: "[",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+        {
+          type: Tokens.passthrough,
+          value: "hello",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+        {
+          type: Tokens.closeBracket,
+          value: "]",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+        {
+          type: Tokens.openParen,
+          value: "(",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+        {
+          type: Tokens.passthrough,
+          value: "world",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+        {
+          type: Tokens.closeParen,
+          value: ")",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+      ]);
+      const parser = new Parser(tokens);
+
+      const node = parser.parse();
+      expect(node).toBeDefined();
+      expect(node.json()).toEqual({
+        type: "document",
+        children: [
+          {
+            type: "paragraph",
+            text: {
+              type: "hyperlink",
+              text: {
+                type: "text",
+                text: "hello",
+              },
+              url: "world",
+            },
+          },
+        ],
+      });
+    });
+
+    it("paragraph with nested hyperlink", () => {
+      const tokens = createTokenStream([
+        {
+          type: Tokens.openBracket,
+          value: "[",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+        {
+          type: Tokens.exponent,
+          value: "**",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+        {
+          type: Tokens.passthrough,
+          value: "hello",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+        {
+          type: Tokens.exponent,
+          value: "**",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+        {
+          type: Tokens.closeBracket,
+          value: "]",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+        {
+          type: Tokens.openParen,
+          value: "(",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+        {
+          type: Tokens.passthrough,
+          value: "world",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+        {
+          type: Tokens.closeParen,
+          value: ")",
+          line: 1,
+          col: 1,
+          index: 0,
+        },
+      ]);
+      const parser = new Parser(tokens);
+
+      const node = parser.parse();
+      expect(node).toBeDefined();
+      expect(node.json()).toEqual({
+        type: "document",
+        children: [
+          {
+            type: "paragraph",
+            text: {
+              type: "hyperlink",
+              text: {
+                type: "bold",
+                text: {
+                  type: "text",
+                  text: "hello",
+                },
+              },
+              url: "world",
+            },
+          },
+        ],
       });
     });
   });
