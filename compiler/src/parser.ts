@@ -31,44 +31,60 @@ export class Parser {
   parseBoldNode(): BoldNode {
     const start = this.tokens.next();
     const children: CharacterNode[] = [];
-    while (start !== this.tokens.peek())
+    while (start.type !== this.tokens.peek().type && !this.tokens.eof())
       children.push(this.parseTextWrapperNode());
 
     return new BoldNode(
-      children.length === 1 ? children[0] : new JoinNode(children)
+      children.length === 1
+        ? children[0]
+        : children.length === 0
+        ? new TextWrapperNode("")
+        : new JoinNode(children)
     );
   }
 
   parseItalicNode(): ItalicNode {
     const start = this.tokens.next();
     const children: CharacterNode[] = [];
-    while (start !== this.tokens.peek())
+    while (start !== this.tokens.peek() && !this.tokens.eof())
       children.push(this.parseTextWrapperNode());
 
     return new ItalicNode(
-      children.length === 1 ? children[0] : new JoinNode(children)
+      children.length === 1
+        ? children[0]
+        : children.length === 0
+        ? new TextWrapperNode("")
+        : new JoinNode(children)
     );
   }
 
   parseUnderlineNode(): UnderlineNode {
     const start = this.tokens.next();
     const children: CharacterNode[] = [];
-    while (start !== this.tokens.peek())
+    while (start !== this.tokens.peek() && !this.tokens.eof())
       children.push(this.parseTextWrapperNode());
 
     return new UnderlineNode(
-      children.length === 1 ? children[0] : new JoinNode(children)
+      children.length === 1
+        ? children[0]
+        : children.length === 0
+        ? new TextWrapperNode("")
+        : new JoinNode(children)
     );
   }
 
   parseStrikethroughNode(): StrikethroughNode {
     const start = this.tokens.next();
     const children: CharacterNode[] = [];
-    while (start !== this.tokens.peek())
+    while (start !== this.tokens.peek() && !this.tokens.eof())
       children.push(this.parseTextWrapperNode());
 
     return new StrikethroughNode(
-      children.length === 1 ? children[0] : new JoinNode(children)
+      children.length === 1
+        ? children[0]
+        : children.length === 0
+        ? new TextWrapperNode("")
+        : new JoinNode(children)
     );
   }
 
