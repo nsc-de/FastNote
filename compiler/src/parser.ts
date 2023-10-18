@@ -1,3 +1,4 @@
+import dollarShortcuts from "./dollar-shortcuts";
 import { TokenStream, Tokens } from "./tokens";
 
 export class Parser {
@@ -98,6 +99,8 @@ export class Parser {
 
   parseTextBasedNode(): CharacterNode {
     switch (this.tokens.peek().type) {
+      case Tokens.dollar:
+        return this.parseDollarNode();
       case Tokens.exponent:
         return this.parseBoldNode();
       case Tokens.asterisk:
@@ -113,11 +116,20 @@ export class Parser {
 
   parseParagraphNode(): ParagraphNode {
     const children: CharacterNode[] = [];
-    while (!this.tokens.eof() && this.tokens.peek().type !== Tokens.newline) {
+    while (!this.tokens.eof() && this.tokens.peek().type !== Tokens.newline)
       children.push(this.parseTextBasedNode());
-    }
+
     return new ParagraphNode(
       children.length === 1 ? children[0] : new JoinNode(children)
+    );
+  }
+
+  parseDollarNode(): CharacterNode {
+    const token = this.tokens.next();
+    if (token.type !== Tokens.dollar) throw new Error("Expected dollar");
+    const name = token.value.substring(1);
+    return new TextWrapperNode(
+      dollarShortcuts.find((d) => d.name === name)?.value ?? `$${token.value}`
     );
   }
 

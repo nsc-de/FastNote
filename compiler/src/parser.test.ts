@@ -83,6 +83,24 @@ describe("Parser", () => {
         expect(node).toBeInstanceOf(TextWrapperNode);
         expect((node as TextWrapperNode).text).toBe("hello");
       });
+
+      it("dollar should create symbol", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.dollar,
+            value: "$copy",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+        const parser = new Parser(tokens);
+        const node = parser.parseTextBasedNode();
+
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(TextWrapperNode);
+        expect((node as TextWrapperNode).text).toBe("©");
+      });
     });
 
     describe("bold", () => {
@@ -363,6 +381,41 @@ describe("Parser", () => {
         const strikethroughNode = boldNode.text as StrikethroughNode;
         expect(strikethroughNode.text).toBeInstanceOf(TextWrapperNode);
         expect((strikethroughNode.text as TextWrapperNode).text).toBe("(");
+      });
+
+      it("test dollar symbol", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.exponent,
+            value: "**",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.dollar,
+            value: "$copy",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.exponent,
+            value: "**",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+
+        const parser = new Parser(tokens);
+        const node = parser.parseTextBasedNode();
+
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(BoldNode);
+        const boldNode = node as BoldNode;
+        expect(boldNode.text).toBeInstanceOf(TextWrapperNode);
+        expect((boldNode.text as TextWrapperNode).text).toBe("©");
       });
     });
 
@@ -646,6 +699,41 @@ describe("Parser", () => {
         expect(strikethroughNode.text).toBeInstanceOf(TextWrapperNode);
         expect((strikethroughNode.text as TextWrapperNode).text).toBe("(");
       });
+
+      it("test dollar symbol", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.asterisk,
+            value: "*",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.dollar,
+            value: "$copy",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.asterisk,
+            value: "*",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+
+        const parser = new Parser(tokens);
+        const node = parser.parseTextBasedNode();
+
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(ItalicNode);
+        const italicNode = node as ItalicNode;
+        expect(italicNode.text).toBeInstanceOf(TextWrapperNode);
+        expect((italicNode.text as TextWrapperNode).text).toBe("©");
+      });
     });
 
     describe("strikethrough", () => {
@@ -928,6 +1016,41 @@ describe("Parser", () => {
         const italicNode = strikeThroughNode.text as ItalicNode;
         expect(italicNode.text).toBeInstanceOf(TextWrapperNode);
         expect((italicNode.text as TextWrapperNode).text).toBe("(");
+      });
+
+      it("test dollar symbol", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.minus,
+            value: "-",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.dollar,
+            value: "$copy",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.minus,
+            value: "-",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+
+        const parser = new Parser(tokens);
+        const node = parser.parseTextBasedNode();
+
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(StrikethroughNode);
+        const italicNode = node as StrikethroughNode;
+        expect(italicNode.text).toBeInstanceOf(TextWrapperNode);
+        expect((italicNode.text as TextWrapperNode).text).toBe("©");
       });
     });
   });
