@@ -107,7 +107,7 @@ export class Parser {
         return this.parseItalicNode();
       //    case Tokens.identifier: // _ is in identifier, fix this
       //      return this.parseUnderlineNode();
-      case Tokens.minus:
+      case Tokens.tilde:
         return this.parseStrikethroughNode();
       default:
         return this.parseTextWrapperNode();

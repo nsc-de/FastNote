@@ -23,6 +23,7 @@ export enum Tokens {
   exponent = "exponent",
   doubleSlash = "doubleSlash",
   caret = "caret",
+  tilde = "tilde",
 
   dollar = "dollar",
   and = "and",

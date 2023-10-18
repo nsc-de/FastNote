@@ -17,6 +17,7 @@ export class Lexer {
     if (char === ",") return this.comma();
     if (char === ".") return this.dot();
     if (char === "=") return this.equals();
+    if (char === "~") return this.tilde();
     if (char === "+") return this.plus();
     if (char === "-") return this.minus();
     if (char === "*") return this.asterisk();
@@ -71,6 +72,22 @@ export class Lexer {
     this.tokenBuffer.push({
       type: Tokens.whitespace,
       value,
+      line,
+      col,
+      index,
+    });
+
+    return this.popBuffer();
+  }
+
+  tilde() {
+    const col = this.source.col;
+    const line = this.source.line;
+    const index = this.source.index;
+
+    this.tokenBuffer.push({
+      type: Tokens.tilde,
+      value: "~",
       line,
       col,
       index,

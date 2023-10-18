@@ -342,8 +342,8 @@ describe("Parser", () => {
             index: 0,
           },
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -356,8 +356,8 @@ describe("Parser", () => {
             index: 0,
           },
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -659,8 +659,8 @@ describe("Parser", () => {
             index: 0,
           },
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -673,8 +673,8 @@ describe("Parser", () => {
             index: 0,
           },
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -740,15 +740,15 @@ describe("Parser", () => {
       it("should parse empty strikethrough", () => {
         const tokens = createTokenStream([
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
           },
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -766,8 +766,8 @@ describe("Parser", () => {
       it("should parse single passthrough strikethrough", () => {
         const tokens = createTokenStream([
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -780,8 +780,8 @@ describe("Parser", () => {
             index: 0,
           },
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -799,8 +799,8 @@ describe("Parser", () => {
       it("should parse multiple passthrough strikethrough", () => {
         const tokens = createTokenStream([
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -820,8 +820,8 @@ describe("Parser", () => {
             index: 0,
           },
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -839,8 +839,8 @@ describe("Parser", () => {
       it("should parse single non-passthrough strikethrough", () => {
         const tokens = createTokenStream([
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -853,8 +853,8 @@ describe("Parser", () => {
             index: 0,
           },
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -872,8 +872,8 @@ describe("Parser", () => {
       it("should parse multiple non-passthrough strikethrough", () => {
         const tokens = createTokenStream([
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -893,8 +893,8 @@ describe("Parser", () => {
             index: 0,
           },
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -918,8 +918,8 @@ describe("Parser", () => {
       it("test nested bold", () => {
         const tokens = createTokenStream([
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -946,8 +946,8 @@ describe("Parser", () => {
             index: 0,
           },
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -969,8 +969,8 @@ describe("Parser", () => {
       it("test nested italic", () => {
         const tokens = createTokenStream([
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -997,8 +997,8 @@ describe("Parser", () => {
             index: 0,
           },
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -1021,8 +1021,8 @@ describe("Parser", () => {
       it("test dollar symbol", () => {
         const tokens = createTokenStream([
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -1035,8 +1035,8 @@ describe("Parser", () => {
             index: 0,
           },
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -1217,8 +1217,8 @@ describe("Parser", () => {
             index: 0,
           },
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -1231,8 +1231,8 @@ describe("Parser", () => {
             index: 0,
           },
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -1382,8 +1382,8 @@ describe("Parser", () => {
       it("should parse paragraph with strikethrough content", () => {
         const tokens = createTokenStream([
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,
@@ -1397,8 +1397,8 @@ describe("Parser", () => {
           },
 
           {
-            type: Tokens.minus,
-            value: "-",
+            type: Tokens.tilde,
+            value: "~",
             line: 1,
             col: 1,
             index: 0,

@@ -506,6 +506,20 @@ describe("Lexer", () => {
     });
   });
 
+  describe("tilde", () => {
+    it("lex tilde", () => {
+      const lexer = new Lexer(createCharacterInputStream("~"));
+      const token = lexer.next();
+      expect(token).toEqual({
+        type: "tilde",
+        value: "~",
+        line: 1,
+        col: 1,
+        index: 0,
+      });
+    });
+  });
+
   describe("passthrough", () => {
     it("lex passthrough", () => {
       const lexer = new Lexer(createCharacterInputStream("©"));

@@ -9,7 +9,22 @@ It is quite similar to markdown, you can write in clear text, but you can use co
 
 ## Features
 
+### Formatting
+
+✅ This is already implemented.
+
+You can use formatting to highlight text. Formatting is defined by a `*` followed by the text and a `*`.
+
+```markdown
+_Italic text_
+**Bold text**
+***Italic and bold text***
+~Strikethrough text~
+```
+
 ### Headings
+
+✅ This is already implemented.
 
 You can use headings to structure your notes. Headings are defined by a `#` followed by a space and the heading text.
 You can use up to 6 `#` to define a heading. The more `#` you use, the smaller the heading will be.
@@ -65,6 +80,8 @@ console.log("Hello World!");
 ````
 
 ### Insert symbols (aka dollar-symbols)
+
+✅ This is already implemented.
 
 If you want to insert a symbol, you can use the dollar-symbol syntax. The dollar-symbol syntax is defined by a `$` followed by the symbol name.
 
