@@ -1,5 +1,4 @@
 const path = require("path");
-const fs = require("fs");
 
 module.exports = {
   entryPoints: [path.resolve(__dirname, "./src/index.ts")],

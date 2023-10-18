@@ -2,7 +2,7 @@ import { Tokens, createTokenStream } from "./tokens";
 
 describe("createTokenStream", () => {
   it("should return a token stream", () => {
-    const stream = createTokenStream([]);
+    const _stream = createTokenStream([]);
   });
 
   it("should be eof if empty", () => {
