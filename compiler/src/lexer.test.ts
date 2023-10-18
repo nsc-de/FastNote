@@ -442,4 +442,59 @@ describe("Lexer", () => {
       });
     });
   });
+
+  describe("stream", () => {
+    it("lex stream", () => {
+      const lexer = new Lexer(createCharacterInputStream("a"));
+      const token = lexer.next();
+      expect(token).toEqual({
+        type: "identifier",
+        value: "a",
+        line: 1,
+        col: 1,
+        index: 0,
+      });
+    });
+
+    it("lex stream with multiple characters", () => {
+      const lexer = new Lexer(createCharacterInputStream("abc"));
+      const token = lexer.next();
+      expect(token).toEqual({
+        type: "identifier",
+        value: "abc",
+        line: 1,
+        col: 1,
+        index: 0,
+      });
+    });
+
+    it("lex stream with multiple tokens", () => {
+      const lexer = new Lexer(createCharacterInputStream("a(b"));
+      const token1 = lexer.next();
+      const token2 = lexer.next();
+      const token3 = lexer.next();
+      expect(token1).toEqual({
+        type: "identifier",
+        value: "a",
+        line: 1,
+        col: 1,
+        index: 0,
+      });
+      expect(token2).toEqual({
+        type: "openParen",
+        value: "(",
+        line: 1,
+        col: 2,
+        index: 1,
+      });
+
+      expect(token3).toEqual({
+        type: "identifier",
+        value: "b",
+        line: 1,
+        col: 3,
+        index: 2,
+      });
+    });
+  });
 });

@@ -1,5 +1,5 @@
 import { CharacterInputStream } from "./characters";
-import { Token, Tokens } from "./tokens";
+import { Token, Tokens, createTokenStream } from "./tokens";
 
 export class Lexer {
   private tokenBuffer: Token[] = [];
@@ -41,6 +41,14 @@ export class Lexer {
 
   eof() {
     return this.tokenBuffer.length === 0 && this.source.eof();
+  }
+
+  stream() {
+    const tokens: Token[] = [];
+
+    while (!this.eof()) tokens.push(this.next()!);
+
+    return createTokenStream(tokens);
   }
 
   popBuffer() {
