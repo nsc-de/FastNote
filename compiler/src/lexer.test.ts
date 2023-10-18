@@ -290,6 +290,32 @@ describe("Lexer", () => {
     });
   });
 
+  describe("and", () => {
+    it("lex and", () => {
+      const lexer = new Lexer(createCharacterInputStream("&"));
+      const token = lexer.next();
+      expect(token).toEqual({
+        type: "and",
+        value: "&",
+        line: 1,
+        col: 1,
+        index: 0,
+      });
+    });
+
+    it("lex and-descriptor", () => {
+      const lexer = new Lexer(createCharacterInputStream("&a"));
+      const token = lexer.next();
+      expect(token).toEqual({
+        type: "and",
+        value: "&a",
+        line: 1,
+        col: 1,
+        index: 0,
+      });
+    });
+  });
+
   describe("backslash", () => {
     it("lex backslash", () => {
       const lexer = new Lexer(createCharacterInputStream("\\"));

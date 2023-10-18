@@ -24,6 +24,7 @@ export class Lexer {
     if (char === "%") return this.percent();
     if (char === "^") return this.caret();
     if (char === "$") return this.dollar();
+    if (char === "&") return this.and();
     if (char === "\\") return this.backslash();
     if (char === "/") return this.forwardslash();
     if (char === "(") return this.openParen();
@@ -324,6 +325,30 @@ export class Lexer {
 
     this.tokenBuffer.push({
       type: Tokens.dollar,
+      value,
+      line,
+      col,
+      index,
+    });
+
+    return this.popBuffer();
+  }
+
+  and() {
+    let value = "";
+
+    const col = this.source.col;
+    const line = this.source.line;
+    const index = this.source.index;
+
+    if (this.source.peek() === "&") {
+      value += this.source.next();
+    }
+
+    while (/[\w]/.test(this.source.peek())) value += this.source.next();
+
+    this.tokenBuffer.push({
+      type: Tokens.and,
       value,
       line,
       col,
