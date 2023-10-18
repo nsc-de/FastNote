@@ -1,41 +1,41 @@
 export enum Tokens {
   passthrough = "passthrough",
-  string = "string",
-  whitespace = "whitespace",
+  string = "string", // "string"
+  whitespace = "whitespace", // " " or "\t"
 
-  integer = "integer",
-  float = "float",
+  integer = "integer", // 123
+  float = "float", // 123.456
 
-  identifier = "identifier",
-  heading = "heading",
-  newline = "newline",
+  identifier = "identifier", // abc
+  heading = "heading", // # abc
+  newline = "newline", // \n
 
-  colon = "colon",
-  comma = "comma",
-  dot = "dot",
-  equals = "equals",
+  colon = "colon", // :
+  comma = "comma", // ,
+  dot = "dot", // .
+  equals = "equals", // =
 
-  plus = "plus",
-  minus = "minus",
-  asterisk = "asterisk",
-  slash = "slash",
-  percent = "percent",
-  exponent = "exponent",
-  doubleSlash = "doubleSlash",
-  caret = "caret",
-  tilde = "tilde",
+  plus = "plus", // +
+  minus = "minus", // -
+  asterisk = "asterisk", // *
+  slash = "slash", // /
+  percent = "percent", // %
+  exponent = "exponent", // **
+  doubleSlash = "doubleSlash", // //
+  caret = "caret", // ^
+  tilde = "tilde", // ~
 
-  dollar = "dollar",
-  and = "and",
-  backslash = "backslash",
-  forwardslash = "forwardslash",
+  dollar = "dollar", // $ or $aaa
+  and = "and", // &
+  backslash = "backslash", // \
+  forwardslash = "forwardslash", // /
 
-  openParen = "openParen",
-  closeParen = "closeParen",
-  openBracket = "openBracket",
-  closeBracket = "closeBracket",
-  openBrace = "openBrace",
-  closeBrace = "closeBrace",
+  openParen = "openParen", // (
+  closeParen = "closeParen", // )
+  openBracket = "openBracket", // [
+  closeBracket = "closeBracket", // ]
+  openBrace = "openBrace", // {
+  closeBrace = "closeBrace", // }
 }
 
 export type TokenType = Tokens;

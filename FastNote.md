@@ -18,7 +18,7 @@ You can use formatting to highlight text. Formatting is defined by a `*` followe
 ```markdown
 _Italic text_
 **Bold text**
-***Italic and bold text***
+**_Italic and bold text_**
 ~Strikethrough text~
 ```
 
@@ -56,6 +56,8 @@ You can nest lists by indenting the list item with a tab.
 ```
 
 ### Links
+
+✅ This is already implemented.
 
 You can use links to reference other notes or external resources. Links are defined by a `[]` followed by a `()` and the link text.
 

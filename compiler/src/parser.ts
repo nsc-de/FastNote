@@ -97,8 +97,46 @@ export class Parser {
     );
   }
 
+  parseHyperlinkNode(): HyperlinkNode {
+    const start = this.tokens.next();
+
+    if (start.type !== Tokens.openBracket) throw new Error("Expected [");
+
+    const alt: CharacterNode[] = [];
+    while (
+      !this.tokens.eof() &&
+      this.tokens.peek().type !== Tokens.closeBracket
+    )
+      alt.push(this.parseTextBasedNode());
+
+    if (!this.tokens.eof()) this.tokens.next();
+
+    if (this.tokens.peek().type !== Tokens.openParen)
+      throw new Error("Expected (");
+
+    this.tokens.next();
+
+    const href: CharacterNode[] = [];
+
+    while (!this.tokens.eof() && this.tokens.peek().type !== Tokens.closeParen)
+      href.push(this.parseTextBasedNode());
+
+    if (!this.tokens.eof()) this.tokens.next();
+
+    return new HyperlinkNode(
+      alt.length === 1
+        ? alt[0]
+        : alt.length === 0
+        ? new TextWrapperNode("")
+        : new JoinNode(alt),
+      new JoinNode(href).code
+    );
+  }
+
   parseTextBasedNode(): CharacterNode {
     switch (this.tokens.peek().type) {
+      case Tokens.openBracket:
+        return this.parseHyperlinkNode();
       case Tokens.dollar:
         return this.parseDollarNode();
       case Tokens.exponent:
@@ -157,12 +195,22 @@ export class Tree {
 
 export abstract class CharacterNode {
   constructor() {}
+  abstract get value(): string;
+  abstract get code(): string;
 }
 
 export class TextWrapperNode extends CharacterNode {
   readonly type = "text";
   constructor(readonly text: string) {
     super();
+  }
+
+  get value() {
+    return this.text;
+  }
+
+  get code() {
+    return this.text;
   }
 }
 
@@ -171,12 +219,28 @@ export class BoldNode extends CharacterNode {
   constructor(readonly text: CharacterNode) {
     super();
   }
+
+  get value() {
+    return this.text.value;
+  }
+
+  get code() {
+    return `**${this.text.code}**`;
+  }
 }
 
 export class ItalicNode extends CharacterNode {
   readonly type = "italic";
   constructor(readonly text: CharacterNode) {
     super();
+  }
+
+  get value() {
+    return this.text.value;
+  }
+
+  get code() {
+    return `*${this.text.code}*`;
   }
 }
 
@@ -185,6 +249,14 @@ export class UnderlineNode extends CharacterNode {
   constructor(readonly text: CharacterNode) {
     super();
   }
+
+  get value() {
+    return this.text.value;
+  }
+
+  get code() {
+    return `_${this.text.code}_`;
+  }
 }
 
 export class StrikethroughNode extends CharacterNode {
@@ -192,12 +264,43 @@ export class StrikethroughNode extends CharacterNode {
   constructor(readonly text: CharacterNode) {
     super();
   }
+
+  get value() {
+    return this.text.value;
+  }
+
+  get code() {
+    return `~~${this.text.code}~~`;
+  }
 }
 
 export class JoinNode extends CharacterNode {
   readonly type = "join";
   constructor(readonly text: CharacterNode[]) {
     super();
+  }
+
+  get value() {
+    return this.text.map((t) => t.value).join("");
+  }
+
+  get code() {
+    return this.text.map((t) => t.code).join("");
+  }
+}
+
+export class HyperlinkNode extends CharacterNode {
+  readonly type = "hyperlink";
+  constructor(readonly text: CharacterNode, readonly url: string) {
+    super();
+  }
+
+  get value() {
+    return this.text.value;
+  }
+
+  get code() {
+    return `[${this.text.code}](${this.url})`;
   }
 }
 

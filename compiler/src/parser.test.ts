@@ -1,6 +1,7 @@
 import {
   BoldNode,
   HeadingNode,
+  HyperlinkNode,
   ItalicNode,
   JoinNode,
   ParagraphNode,
@@ -1051,6 +1052,380 @@ describe("Parser", () => {
         const italicNode = node as StrikethroughNode;
         expect(italicNode.text).toBeInstanceOf(TextWrapperNode);
         expect((italicNode.text as TextWrapperNode).text).toBe("©");
+      });
+    });
+
+    describe("hyperlink", () => {
+      it("should parse empty hyperlink", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.openBracket,
+            value: "[",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.closeBracket,
+            value: "]",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.openParen,
+            value: "(",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.closeParen,
+            value: ")",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+        const parser = new Parser(tokens);
+        const node = parser.parseTextBasedNode();
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(HyperlinkNode);
+        const hyperlinkNode = node as HyperlinkNode;
+        expect(hyperlinkNode.text).toBeInstanceOf(TextWrapperNode);
+        expect((hyperlinkNode.text as TextWrapperNode).text).toBe("");
+        expect(hyperlinkNode.url).toBe("");
+      });
+
+      it("should parse single passthrough hyperlink", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.openBracket,
+            value: "[",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.passthrough,
+            value: "hello",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.closeBracket,
+            value: "]",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.openParen,
+            value: "(",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.passthrough,
+            value: "world",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.closeParen,
+            value: ")",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+        const parser = new Parser(tokens);
+        const node = parser.parseTextBasedNode();
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(HyperlinkNode);
+        const hyperlinkNode = node as HyperlinkNode;
+        expect(hyperlinkNode.text).toBeInstanceOf(TextWrapperNode);
+        expect((hyperlinkNode.text as TextWrapperNode).text).toBe("hello");
+        expect(hyperlinkNode.url).toBe("world");
+      });
+
+      it("test with nested bold", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.openBracket,
+            value: "[",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.exponent,
+            value: "**",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.passthrough,
+            value: "hello",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.exponent,
+            value: "**",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.closeBracket,
+            value: "]",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.openParen,
+            value: "(",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.passthrough,
+            value: "world",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.closeParen,
+            value: ")",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+
+        const parser = new Parser(tokens);
+        const node = parser.parseTextBasedNode();
+
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(HyperlinkNode);
+        const hyperlinkNode = node as HyperlinkNode;
+        expect(hyperlinkNode.text).toBeInstanceOf(BoldNode);
+        const boldNode = hyperlinkNode.text as BoldNode;
+        expect(boldNode.text).toBeInstanceOf(TextWrapperNode);
+        expect((boldNode.text as TextWrapperNode).text).toBe("hello");
+        expect(hyperlinkNode.url).toBe("world");
+      });
+
+      it("test with nested italic", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.openBracket,
+            value: "[",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.asterisk,
+            value: "*",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.passthrough,
+            value: "hello",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.asterisk,
+            value: "*",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.closeBracket,
+            value: "]",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.openParen,
+            value: "(",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.passthrough,
+            value: "world",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.closeParen,
+            value: ")",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+
+        const parser = new Parser(tokens);
+        const node = parser.parseTextBasedNode();
+
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(HyperlinkNode);
+        const hyperlinkNode = node as HyperlinkNode;
+        expect(hyperlinkNode.text).toBeInstanceOf(ItalicNode);
+        const italicNode = hyperlinkNode.text as ItalicNode;
+        expect(italicNode.text).toBeInstanceOf(TextWrapperNode);
+        expect((italicNode.text as TextWrapperNode).text).toBe("hello");
+        expect(hyperlinkNode.url).toBe("world");
+      });
+
+      it("test with nested strikethrough", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.openBracket,
+            value: "[",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.tilde,
+            value: "~",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.passthrough,
+            value: "hello",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.tilde,
+            value: "~",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.closeBracket,
+            value: "]",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.openParen,
+            value: "(",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.passthrough,
+            value: "world",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.closeParen,
+            value: ")",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+
+        const parser = new Parser(tokens);
+        const node = parser.parseTextBasedNode();
+
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(HyperlinkNode);
+        const hyperlinkNode = node as HyperlinkNode;
+        expect(hyperlinkNode.text).toBeInstanceOf(StrikethroughNode);
+        const italicNode = hyperlinkNode.text as ItalicNode;
+        expect(italicNode.text).toBeInstanceOf(TextWrapperNode);
+        expect((italicNode.text as TextWrapperNode).text).toBe("hello");
+        expect(hyperlinkNode.url).toBe("world");
+      });
+
+      it("test dollar symbol", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.openBracket,
+            value: "[",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.dollar,
+            value: "$copy",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.closeBracket,
+            value: "]",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.openParen,
+            value: "(",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.dollar,
+            value: "$copy",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.closeParen,
+            value: ")",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+
+        const parser = new Parser(tokens);
+        const node = parser.parseTextBasedNode();
+
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(HyperlinkNode);
+        const hyperlinkNode = node as HyperlinkNode;
+        expect(hyperlinkNode.text).toBeInstanceOf(TextWrapperNode);
+        expect((hyperlinkNode.text as TextWrapperNode).text).toBe("©");
+        expect(hyperlinkNode.url).toBe("©");
       });
     });
   });
