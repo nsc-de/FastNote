@@ -3,6 +3,7 @@ import {
   HeadingNode,
   ItalicNode,
   JoinNode,
+  ParagraphNode,
   Parser,
   StrikethroughNode,
   TextWrapperNode,
@@ -1122,6 +1123,173 @@ describe("Parser", () => {
         expect(
           (
             ((node as HeadingNode).text as StrikethroughNode)
+              .text as TextWrapperNode
+          ).text
+        ).toEqual("hello");
+      });
+    });
+
+    describe("paragraph", () => {
+      it("should parse paragraph", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.passthrough,
+            value: "hello",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+        const parser = new Parser(tokens);
+        const node = parser.parseNode();
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(ParagraphNode);
+        expect(((node as ParagraphNode).text as TextWrapperNode).text).toEqual(
+          "hello"
+        );
+      });
+
+      it("should parse paragraph with newline", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.passthrough,
+            value: "hello",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.newline,
+            value: "\n",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.passthrough,
+            value: "hello",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+        const parser = new Parser(tokens);
+        const node = parser.parseNode();
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(ParagraphNode);
+        expect(((node as ParagraphNode).text as TextWrapperNode).text).toEqual(
+          "hello"
+        );
+      });
+
+      it("should parse paragraph with bold content", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.exponent,
+            value: "**",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.passthrough,
+            value: "hello",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+
+          {
+            type: Tokens.exponent,
+            value: "**",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+        const parser = new Parser(tokens);
+
+        const node = parser.parseNode();
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(ParagraphNode);
+        expect((node as ParagraphNode).text).toBeInstanceOf(BoldNode);
+        expect(
+          (((node as ParagraphNode).text as BoldNode).text as TextWrapperNode)
+            .text
+        ).toEqual("hello");
+      });
+
+      it("should parse paragraph with italic content", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.asterisk,
+            value: "*",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.passthrough,
+            value: "hello",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+
+          {
+            type: Tokens.asterisk,
+            value: "*",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+        const parser = new Parser(tokens);
+
+        const node = parser.parseNode();
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(ParagraphNode);
+        expect((node as ParagraphNode).text).toBeInstanceOf(ItalicNode);
+        expect(
+          (((node as ParagraphNode).text as ItalicNode).text as TextWrapperNode)
+            .text
+        ).toEqual("hello");
+      });
+
+      it("should parse paragraph with strikethrough content", () => {
+        const tokens = createTokenStream([
+          {
+            type: Tokens.minus,
+            value: "-",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+          {
+            type: Tokens.passthrough,
+            value: "hello",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+
+          {
+            type: Tokens.minus,
+            value: "-",
+            line: 1,
+            col: 1,
+            index: 0,
+          },
+        ]);
+        const parser = new Parser(tokens);
+
+        const node = parser.parseNode();
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(ParagraphNode);
+        expect((node as ParagraphNode).text).toBeInstanceOf(StrikethroughNode);
+        expect(
+          (
+            ((node as ParagraphNode).text as StrikethroughNode)
               .text as TextWrapperNode
           ).text
         ).toEqual("hello");

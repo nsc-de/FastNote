@@ -113,7 +113,7 @@ export class Parser {
 
   parseParagraphNode(): ParagraphNode {
     const children: CharacterNode[] = [];
-    while (!this.tokens.eof()) {
+    while (!this.tokens.eof() && this.tokens.peek().type !== Tokens.newline) {
       children.push(this.parseTextBasedNode());
     }
     return new ParagraphNode(
