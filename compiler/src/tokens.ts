@@ -1,11 +1,38 @@
 export enum Tokens {
   passthrough = "passthrough",
   string = "string",
+
   integer = "integer",
   float = "float",
+
   identifier = "identifier",
   heading = "heading",
   newline = "newline",
+
+  colon = "colon",
+  comma = "comma",
+  dot = "dot",
+  equals = "equals",
+
+  plus = "plus",
+  minus = "minus",
+  asterisk = "asterisk",
+  slash = "slash",
+  percent = "percent",
+  exponent = "exponent",
+  doubleSlash = "doubleSlash",
+  caret = "caret",
+
+  dollar = "dollar",
+  backslash = "backslash",
+  forwardslash = "forwardslash",
+
+  openParen = "openParen",
+  closeParen = "closeParen",
+  openBracket = "openBracket",
+  closeBracket = "closeBracket",
+  openBrace = "openBrace",
+  closeBrace = "closeBrace",
 }
 
 export type TokenType = Tokens;
