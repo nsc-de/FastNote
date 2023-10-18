@@ -10,6 +10,7 @@ export class Lexer {
 
     const char = this.source.peek();
 
+    if (char === " " || char === "\t") return this.space();
     if (char === "#") return this.heading();
     if (char === "\n") return this.newline();
     if (char === ":") return this.colon();
@@ -53,6 +54,28 @@ export class Lexer {
 
   popBuffer() {
     return this.tokenBuffer.shift();
+  }
+
+  space() {
+    let value = "";
+
+    const col = this.source.col;
+    const line = this.source.line;
+    const index = this.source.index;
+
+    while (this.source.peek() === " " || this.source.peek() === "\t") {
+      value += this.source.next();
+    }
+
+    this.tokenBuffer.push({
+      type: Tokens.whitespace,
+      value,
+      line,
+      col,
+      index,
+    });
+
+    return this.popBuffer();
   }
 
   heading() {

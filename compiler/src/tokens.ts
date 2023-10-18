@@ -1,6 +1,7 @@
 export enum Tokens {
   passthrough = "passthrough",
   string = "string",
+  whitespace = "space",
 
   integer = "integer",
   float = "float",

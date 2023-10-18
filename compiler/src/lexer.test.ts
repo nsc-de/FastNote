@@ -1,5 +1,6 @@
 import { createCharacterInputStream } from "./characters";
 import { Lexer } from "./lexer";
+import { Tokens } from "./tokens";
 
 describe("Lexer", () => {
   it("should create a new lexer", () => {
@@ -15,6 +16,44 @@ describe("Lexer", () => {
   it("should not be eof if tokens are left", () => {
     const lexer = new Lexer(createCharacterInputStream("a"));
     expect(lexer.eof()).toBe(false);
+  });
+
+  describe("whitespace", () => {
+    it("should lex whitespace", () => {
+      const lexer = new Lexer(createCharacterInputStream(" "));
+      const token = lexer.next();
+      expect(token).toEqual({
+        type: Tokens.whitespace,
+        value: " ",
+        line: 1,
+        col: 1,
+        index: 0,
+      });
+    });
+
+    it("should lex multiple whitespace", () => {
+      const lexer = new Lexer(createCharacterInputStream("  "));
+      const token = lexer.next();
+      expect(token).toEqual({
+        type: Tokens.whitespace,
+        value: "  ",
+        line: 1,
+        col: 1,
+        index: 0,
+      });
+    });
+
+    it("should lex tab", () => {
+      const lexer = new Lexer(createCharacterInputStream("\t"));
+      const token = lexer.next();
+      expect(token).toEqual({
+        type: Tokens.whitespace,
+        value: "\t",
+        line: 1,
+        col: 1,
+        index: 0,
+      });
+    });
   });
 
   describe("heading", () => {
