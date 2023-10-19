@@ -37,13 +37,7 @@ export class Parser {
 
     if (!this.tokens.eof()) this.tokens.next();
 
-    return new BoldNode(
-      children.length === 1
-        ? children[0]
-        : children.length === 0
-        ? new TextWrapperNode("")
-        : new JoinNode(children)
-    );
+    return new BoldNode(join(children));
   }
 
   parseItalicNode(): ItalicNode {
@@ -54,13 +48,7 @@ export class Parser {
 
     if (!this.tokens.eof()) this.tokens.next();
 
-    return new ItalicNode(
-      children.length === 1
-        ? children[0]
-        : children.length === 0
-        ? new TextWrapperNode("")
-        : new JoinNode(children)
-    );
+    return new ItalicNode(join(children));
   }
 
   parseUnderlineNode(): UnderlineNode {
@@ -71,13 +59,7 @@ export class Parser {
 
     if (!this.tokens.eof()) this.tokens.next();
 
-    return new UnderlineNode(
-      children.length === 1
-        ? children[0]
-        : children.length === 0
-        ? new TextWrapperNode("")
-        : new JoinNode(children)
-    );
+    return new UnderlineNode(join(children));
   }
 
   parseStrikethroughNode(): StrikethroughNode {
@@ -88,13 +70,7 @@ export class Parser {
 
     if (!this.tokens.eof()) this.tokens.next();
 
-    return new StrikethroughNode(
-      children.length === 1
-        ? children[0]
-        : children.length === 0
-        ? new TextWrapperNode("")
-        : new JoinNode(children)
-    );
+    return new StrikethroughNode(join(children));
   }
 
   parseHyperlinkNode(): HyperlinkNode {
@@ -123,14 +99,7 @@ export class Parser {
 
     if (!this.tokens.eof()) this.tokens.next();
 
-    return new HyperlinkNode(
-      alt.length === 1
-        ? alt[0]
-        : alt.length === 0
-        ? new TextWrapperNode("")
-        : new JoinNode(alt),
-      new JoinNode(href).code
-    );
+    return new HyperlinkNode(join(alt), join(href).code);
   }
 
   parseTextBasedNode(): CharacterNode {
@@ -159,9 +128,7 @@ export class Parser {
 
     if (!this.tokens.eof()) this.tokens.next();
 
-    return new ParagraphNode(
-      children.length === 1 ? children[0] : new JoinNode(children)
-    );
+    return new ParagraphNode(join(children));
   }
 
   parseDollarNode(): CharacterNode {
@@ -181,11 +148,59 @@ export class Parser {
 
     if (!this.tokens.eof()) this.tokens.next();
 
-    return new HeadingNode(
-      start.value.length,
-      children.length === 1 ? children[0] : new JoinNode(children)
-    );
+    return new HeadingNode(start.value.length, join(children));
   }
+
+  parseFormulaNode(): FormulaNode {
+    const start = this.tokens.next();
+    if (start.type !== Tokens.doubleDollar)
+      throw new Error("Expected doubleDollar");
+
+    const name = start.value.substring(2);
+
+    const args: ArgumentNode[] = [];
+
+    while (
+      !this.tokens.eof() &&
+      this.tokens.peek().type === Tokens.closeBrace
+    ) {
+      args.push(this.parseArgumentNode());
+    }
+
+    if (
+      !this.tokens.eof() &&
+      this.tokens.peek()?.type === Tokens.doubleDollar
+    ) {
+      this.tokens.next();
+    }
+
+    return new FormulaNode(name, args);
+  }
+
+  parseArgumentNode(): ArgumentNode {
+    this.tokens.next();
+
+    const children: CharacterNode[] = [];
+
+    while (
+      !this.tokens.eof() &&
+      this.tokens.peek().type !== Tokens.closeBrace
+    ) {
+      children.push(this.parseTextBasedNode());
+    }
+
+    if (!this.tokens.eof()) this.tokens.next();
+
+    return new ArgumentNode(join(children));
+  }
+}
+
+function join(nodes: CharacterNode[]) {
+  return nodes.length === 1
+    ? nodes[0]
+    : nodes.length === 0
+    ? new TextWrapperNode("")
+    : new JoinNode(nodes);
 }
 
 export abstract class Node {
@@ -387,6 +402,34 @@ export class HeadingNode extends Node {
       type: "heading",
       level: this.level,
       text: this.text.json(),
+    };
+  }
+}
+
+export class ArgumentNode extends Node {
+  readonly type = "argument";
+  constructor(readonly text: CharacterNode) {
+    super();
+  }
+
+  json() {
+    return {
+      type: "argument",
+      text: this.text.json(),
+    };
+  }
+}
+
+export class FormulaNode extends Node {
+  readonly type = "formula";
+  constructor(readonly name: string, readonly args: ArgumentNode[]) {
+    super();
+  }
+  json(): unknown {
+    return {
+      type: "formula",
+      name: this.name,
+      args: this.args.map((a) => a.json()),
     };
   }
 }
