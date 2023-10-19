@@ -1,5 +1,7 @@
 import {
+  ArgumentNode,
   BoldNode,
+  FormulaNode,
   HeadingNode,
   HyperlinkNode,
   ItalicNode,
@@ -1426,6 +1428,107 @@ describe("Parser", () => {
         expect(hyperlinkNode.text).toBeInstanceOf(TextWrapperNode);
         expect((hyperlinkNode.text as TextWrapperNode).text).toBe("©");
         expect(hyperlinkNode.url).toBe("©");
+      });
+    });
+
+    describe("formula", () => {
+      it("test formula with no arguments", () => {
+        const tokens = createTokenStream([
+          {
+            col: 1,
+            index: 0,
+            line: 1,
+            type: Tokens.doubleDollar,
+            value: "$$test",
+          },
+          {
+            col: 1,
+            index: 0,
+            line: 1,
+            type: Tokens.doubleDollar,
+            value: "$$",
+          },
+        ]);
+
+        const parser = new Parser(tokens);
+        const node = parser.parseTextBasedNode();
+
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(FormulaNode);
+        const formulaNode = node as FormulaNode;
+
+        expect(formulaNode.name).toEqual("test");
+        expect(formulaNode.args).toHaveLength(0);
+      });
+
+      it("test formula with single argument", () => {
+        const tokens = createTokenStream([
+          {
+            col: 1,
+            index: 0,
+            line: 1,
+            type: Tokens.doubleDollar,
+            value: "$$test",
+          },
+          {
+            col: 1,
+            index: 0,
+            line: 1,
+            type: Tokens.openBrace,
+            value: "{",
+          },
+          {
+            col: 1,
+            index: 0,
+            line: 1,
+            type: Tokens.passthrough,
+            value: "hello",
+          },
+          {
+            col: 1,
+            index: 0,
+            line: 1,
+            type: Tokens.closeBrace,
+            value: "}",
+          },
+          {
+            col: 1,
+            index: 0,
+            line: 1,
+            type: Tokens.doubleDollar,
+            value: "$$",
+          },
+          {
+            col: 1,
+            index: 0,
+            line: 1,
+            type: Tokens.doubleDollar,
+            value: "$$",
+          },
+        ]);
+
+        const parser = new Parser(tokens);
+        const node = parser.parseTextBasedNode();
+
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(FormulaNode);
+        const formulaNode = node as FormulaNode;
+
+        expect(formulaNode.name).toEqual("test");
+        expect(formulaNode.args).toHaveLength(1);
+        expect(formulaNode.json()).toEqual({
+          args: [
+            {
+              text: {
+                text: "hello",
+                type: "text",
+              },
+              type: "argument",
+            },
+          ],
+          name: "test",
+          type: "formula",
+        });
       });
     });
   });

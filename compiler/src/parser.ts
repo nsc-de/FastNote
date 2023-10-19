@@ -108,6 +108,8 @@ export class Parser {
         return this.parseHyperlinkNode();
       case Tokens.dollar:
         return this.parseDollarNode();
+      case Tokens.doubleDollar:
+        return this.parseFormulaNode();
       case Tokens.exponent:
         return this.parseBoldNode();
       case Tokens.asterisk:
@@ -160,10 +162,7 @@ export class Parser {
 
     const args: ArgumentNode[] = [];
 
-    while (
-      !this.tokens.eof() &&
-      this.tokens.peek().type === Tokens.closeBrace
-    ) {
+    while (!this.tokens.eof() && this.tokens.peek().type === Tokens.openBrace) {
       args.push(this.parseArgumentNode());
     }
 
@@ -215,8 +214,10 @@ export class Tree {
   }
 }
 
-export abstract class CharacterNode {
-  constructor() {}
+export abstract class CharacterNode extends Node {
+  constructor() {
+    super();
+  }
   abstract get value(): string;
   abstract get code(): string;
   abstract json(): unknown;
@@ -406,7 +407,7 @@ export class HeadingNode extends Node {
   }
 }
 
-export class ArgumentNode extends Node {
+export class ArgumentNode extends CharacterNode {
   readonly type = "argument";
   constructor(readonly text: CharacterNode) {
     super();
@@ -418,9 +419,15 @@ export class ArgumentNode extends Node {
       text: this.text.json(),
     };
   }
+  get value(): string {
+    return `{${this.text.value}}`;
+  }
+  get code(): string {
+    return `{${this.text.code}}`;
+  }
 }
 
-export class FormulaNode extends Node {
+export class FormulaNode extends CharacterNode {
   readonly type = "formula";
   constructor(readonly name: string, readonly args: ArgumentNode[]) {
     super();
@@ -431,5 +438,12 @@ export class FormulaNode extends Node {
       name: this.name,
       args: this.args.map((a) => a.json()),
     };
+  }
+
+  get value(): string {
+    return this.name + this.args.map((a) => a.value).join("");
+  }
+  get code(): string {
+    return this.name + this.args.map((a) => a.code).join("");
   }
 }
