@@ -1,3 +1,4 @@
+import { Parser } from "./parser";
 import {
   BoldNode,
   FormulaNode,
@@ -6,10 +7,9 @@ import {
   ItalicNode,
   JoinNode,
   ParagraphNode,
-  Parser,
   StrikethroughNode,
   TextWrapperNode,
-} from "./parser";
+} from "./nodes";
 import { Tokens, createTokenStream } from "./tokens";
 
 describe("Parser", () => {
