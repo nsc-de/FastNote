@@ -9,7 +9,7 @@ declare module "mathjax-node" {
   }
 
   interface TypesetOutput {
-    errors: any; // You may need to define a more specific type for errors
+    errors: unknown;
     svg?: string;
     html?: string;
     css?: string;
