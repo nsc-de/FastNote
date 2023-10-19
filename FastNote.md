@@ -15,8 +15,8 @@ It is quite similar to markdown, you can write in clear text, but you can use co
 
 You can use formatting to highlight text. Formatting is defined by a `*` followed by the text and a `*`.
 
-```markdown
-_Italic text_
+```
+*Italic text*
 **Bold text**
 ***Italic and bold text***
 ~Strikethrough text~
@@ -94,6 +94,8 @@ $copyright
 This will insert the symbol `©`.
 
 ### Insert a formula
+
+✅ This is already implemented.
 
 If you want to insert a formula, you can use the formula syntax. The formula syntax is defined by a `$$` followed by the formula.
 
