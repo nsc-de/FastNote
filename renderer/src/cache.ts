@@ -30,8 +30,32 @@ export function multilayer_get_helper(
   });
 }
 
-export function searchTree(treeLayers: number = 3) {
-  const cache = {};
+export function searchTree<T>(treeLayers: number = 3, data?: unknown) {
+  const cache = data ?? {};
 
-  function insert(path: string, value: any) {}
+  function insert(path: string, value: T) {
+    multilayer_get_helper(
+      path,
+      cache,
+      (obj, subpath) => {
+        (obj as Record<string, T>)[subpath] = value;
+      },
+      treeLayers
+    );
+  }
+
+  function get(path: string): T | undefined {
+    let result: T | undefined = undefined;
+    multilayer_get_helper(
+      path,
+      cache,
+      (obj, subpath) => {
+        result = (obj as Record<string, T>)[subpath];
+      },
+      treeLayers
+    );
+    return result;
+  }
+
+  return { insert, get };
 }

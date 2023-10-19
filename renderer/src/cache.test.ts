@@ -1,4 +1,4 @@
-import { get_helper, multilayer_get_helper } from "./cache";
+import { get_helper, multilayer_get_helper, searchTree } from "./cache";
 
 describe("helpers", () => {
   describe("get_helper", () => {
@@ -189,6 +189,31 @@ describe("helpers", () => {
       );
 
       expect(obj).toEqual({ a: { b: { c: 1 } } });
+    });
+  });
+});
+
+describe("searchTree", () => {
+  describe("insert", () => {
+    it("should insert a value 3 deep", () => {
+      const data = {};
+      const tree = searchTree(3, data);
+      tree.insert("abcdef", 1);
+      expect(data).toEqual({ a: { b: { c: { def: 1 } } } });
+    });
+  });
+
+  describe("get", () => {
+    it("should get a value 3 deep", () => {
+      const data = { a: { b: { c: { def: 1 } } } };
+      const tree = searchTree(3, data);
+      expect(tree.get("abcdef")).toEqual(1);
+    });
+
+    it("should return undefined if the value doesn't exist", () => {
+      const data = { a: { b: { c: { def: 1 } } } };
+      const tree = searchTree(3, data);
+      expect(tree.get("abcde")).toEqual(undefined);
     });
   });
 });
