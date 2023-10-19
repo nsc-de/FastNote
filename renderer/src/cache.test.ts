@@ -1,4 +1,5 @@
-import { get_helper, multilayer_get_helper, searchTree } from "./cache";
+import { Cache, get_helper, multilayer_get_helper, searchTree } from "./cache";
+import tmp from "tmp";
 
 describe("helpers", () => {
   describe("get_helper", () => {
@@ -215,5 +216,54 @@ describe("searchTree", () => {
       const tree = searchTree(3, data);
       expect(tree.get("abcde")).toEqual(undefined);
     });
+  });
+});
+
+describe("Cache", () => {
+  let cachePath: string;
+  let cache: Cache;
+
+  beforeAll(() => {
+    // Create a temporary directory for caching
+    tmp.setGracefulCleanup();
+    const cacheDir = tmp.dirSync({ mode: 0o755, prefix: "jest-cache-" });
+
+    // Set the cache directory as an environment variable
+    cachePath = cacheDir.name;
+
+    cache = new Cache(cachePath, 3);
+  });
+
+  describe("insertPNG", () => {
+    it("should insert png file", () => {
+      const data = Buffer.from("test");
+      cache.insertPNG("test", data);
+    });
+  });
+
+  describe("insertSVG", () => {
+    it("should insert svg file", () => {
+      const data = "<svg></svg>";
+      cache.insertSVG("test", data);
+    });
+  });
+
+  describe("insertHTML", () => {
+    it("should insert json file", () => {
+      const data = "<html></html>";
+      cache.insertHTML("test", data);
+    });
+  });
+
+  describe("insertCSS", () => {
+    it("should insert css file", () => {
+      const data = "body { color: red; }";
+      cache.insertCSS("test", data);
+    });
+  });
+
+  afterAll(() => {
+    // Clean up the temporary directory after all tests are done
+    tmp.setGracefulCleanup();
   });
 });
