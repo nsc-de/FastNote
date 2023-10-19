@@ -178,18 +178,18 @@ export class Cache {
     return await fs.readFile(entry.svgPath, "utf-8");
   }
 
-  async getSVG(requested: string): Promise<string | undefined> {
+  async getHTML(requested: string): Promise<string | undefined> {
     const entry = this.searchTree.get(requested);
-    if (entry === undefined || entry.svgPath === undefined) return undefined;
+    if (entry === undefined || entry.htmlPath === undefined) return undefined;
 
-    return await fs.readFile(entry.svgPath, "utf-8");
+    return await fs.readFile(entry.htmlPath, "utf-8");
   }
 
-  async getSVG(requested: string): Promise<string | undefined> {
+  async getCSS(requested: string): Promise<string | undefined> {
     const entry = this.searchTree.get(requested);
-    if (entry === undefined || entry.svgPath === undefined) return undefined;
+    if (entry === undefined || entry.cssPath === undefined) return undefined;
 
-    return await fs.readFile(entry.svgPath, "utf-8");
+    return await fs.readFile(entry.cssPath, "utf-8");
   }
 
   private entryFor(requested: string): CacheEntry {
