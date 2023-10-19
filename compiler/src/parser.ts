@@ -135,7 +135,6 @@ export class Parser {
 
   parseDollarNode(): CharacterNode {
     const token = this.tokens.next();
-    if (token.type !== Tokens.dollar) throw new Error("Expected dollar");
     const name = token.value.substring(1);
     return new TextWrapperNode(
       dollarShortcuts.find((d) => d.name === name)?.value ?? `$${token.value}`
@@ -155,8 +154,6 @@ export class Parser {
 
   parseFormulaNode(): FormulaNode {
     const start = this.tokens.next();
-    if (start.type !== Tokens.doubleDollar)
-      throw new Error("Expected doubleDollar");
 
     const name = start.value.substring(2);
 

@@ -1530,6 +1530,98 @@ describe("Parser", () => {
           type: "formula",
         });
       });
+
+      it("test formula with multiple arguments", () => {
+        const tokens = createTokenStream([
+          {
+            col: 1,
+            index: 0,
+            line: 1,
+            type: Tokens.doubleDollar,
+            value: "$$test",
+          },
+          {
+            col: 1,
+            index: 0,
+            line: 1,
+            type: Tokens.openBrace,
+            value: "{",
+          },
+          {
+            col: 1,
+            index: 0,
+            line: 1,
+            type: Tokens.passthrough,
+            value: "hello",
+          },
+          {
+            col: 1,
+            index: 0,
+            line: 1,
+            type: Tokens.closeBrace,
+            value: "}",
+          },
+          {
+            col: 1,
+            index: 0,
+            line: 1,
+            type: Tokens.openBrace,
+            value: "{",
+          },
+          {
+            col: 1,
+            index: 0,
+            line: 1,
+            type: Tokens.passthrough,
+            value: "world",
+          },
+          {
+            col: 1,
+            index: 0,
+            line: 1,
+            type: Tokens.closeBrace,
+            value: "}",
+          },
+          {
+            col: 1,
+            index: 0,
+            line: 1,
+            type: Tokens.doubleDollar,
+            value: "$$",
+          },
+        ]);
+
+        const parser = new Parser(tokens);
+        const node = parser.parseTextBasedNode();
+
+        expect(node).toBeDefined();
+        expect(node).toBeInstanceOf(FormulaNode);
+        const formulaNode = node as FormulaNode;
+
+        expect(formulaNode.name).toEqual("test");
+        expect(formulaNode.args).toHaveLength(2);
+
+        expect(formulaNode.json()).toEqual({
+          args: [
+            {
+              text: {
+                text: "hello",
+                type: "text",
+              },
+              type: "argument",
+            },
+            {
+              text: {
+                text: "world",
+                type: "text",
+              },
+              type: "argument",
+            },
+          ],
+          name: "test",
+          type: "formula",
+        });
+      });
     });
   });
 
