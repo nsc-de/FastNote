@@ -3,8 +3,10 @@ export abstract class Node {
   abstract json(): unknown;
 }
 
-export class Tree {
-  constructor(public readonly children: Node[]) {}
+export class Tree extends Node {
+  constructor(public readonly children: Node[]) {
+    super();
+  }
   json(): unknown {
     return { children: this.children.map((c) => c.json()), type: "document" };
   }

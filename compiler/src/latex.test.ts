@@ -23,6 +23,39 @@ describe("LatexGenerator", () => {
 
       expect(result).toEqual("");
     });
+
+    it("should generate a tree with children", () => {
+      const generator = new LatexGenerator();
+
+      const result = generator.generateTree(
+        new Tree([new TextWrapperNode("Hello World!")])
+      );
+
+      expect(result).toEqual("Hello World!");
+    });
+
+    it("should generate a tree with multiple children", () => {
+      const generator = new LatexGenerator();
+
+      const result = generator.generateTree(
+        new Tree([new TextWrapperNode("Hello "), new TextWrapperNode("World!")])
+      );
+
+      expect(result).toEqual("Hello World!");
+    });
+
+    it("should generate a tree with a child that has children", () => {
+      const generator = new LatexGenerator();
+
+      const result = generator.generateTree(
+        new Tree([
+          new TextWrapperNode("Hello "),
+          new Tree([new TextWrapperNode("World!")]),
+        ])
+      );
+
+      expect(result).toEqual("Hello World!");
+    });
   });
 
   describe("generateTextWrapperNode", () => {
@@ -224,6 +257,254 @@ describe("LatexGenerator", () => {
       );
 
       expect(result).toEqual("\\sum_{Hello World!}^{Hello World!}");
+    });
+  });
+
+  describe("generate", () => {
+    describe("generateTree", () => {
+      it("should generate a tree", () => {
+        const generator = new LatexGenerator();
+
+        const result = generator.generate(new Tree([]));
+
+        expect(result).toEqual("");
+      });
+
+      it("should generate a tree with children", () => {
+        const generator = new LatexGenerator();
+
+        const result = generator.generate(
+          new Tree([new TextWrapperNode("Hello World!")])
+        );
+
+        expect(result).toEqual("Hello World!");
+      });
+
+      it("should generate a tree with multiple children", () => {
+        const generator = new LatexGenerator();
+
+        const result = generator.generate(
+          new Tree([
+            new TextWrapperNode("Hello "),
+            new TextWrapperNode("World!"),
+          ])
+        );
+
+        expect(result).toEqual("Hello World!");
+      });
+
+      it("should generate a tree with a child that has children", () => {
+        const generator = new LatexGenerator();
+
+        const result = generator.generate(
+          new Tree([
+            new TextWrapperNode("Hello "),
+            new Tree([new TextWrapperNode("World!")]),
+          ])
+        );
+
+        expect(result).toEqual("Hello World!");
+      });
+    });
+
+    describe("generateTextWrapperNode", () => {
+      it("should generate text wrapper node", () => {
+        const generator = new LatexGenerator();
+
+        const result = generator.generate(new TextWrapperNode("Hello World!"));
+
+        expect(result).toEqual("Hello World!");
+      });
+    });
+
+    describe("generateBold", () => {
+      it("should generate bold text", () => {
+        const generator = new LatexGenerator();
+
+        const result = generator.generate(
+          new BoldNode(new TextWrapperNode("Hello World!"))
+        );
+
+        expect(result).toEqual("\\textbf{Hello World!}");
+      });
+    });
+
+    describe("generateItalic", () => {
+      it("should generate italic text", () => {
+        const generator = new LatexGenerator();
+
+        const result = generator.generate(
+          new ItalicNode(new TextWrapperNode("Hello World!"))
+        );
+
+        expect(result).toEqual("\\textit{Hello World!}");
+      });
+    });
+
+    describe("generateUnderline", () => {
+      it("should generate underline text", () => {
+        const generator = new LatexGenerator();
+
+        const result = generator.generate(
+          new UnderlineNode(new TextWrapperNode("Hello World!"))
+        );
+
+        expect(result).toEqual("\\underline{Hello World!}");
+      });
+    });
+
+    describe("generateStrikethrough", () => {
+      it("should generate strikethrough text", () => {
+        const generator = new LatexGenerator();
+
+        const result = generator.generate(
+          new StrikethroughNode(new TextWrapperNode("Hello World!"))
+        );
+
+        expect(result).toEqual("\\sout{Hello World!}");
+      });
+    });
+
+    describe("generateJoin", () => {
+      it("should generate joined text", () => {
+        const generator = new LatexGenerator();
+
+        const result = generator.generate(
+          new JoinNode([
+            new TextWrapperNode("Hello "),
+            new TextWrapperNode("World!"),
+          ])
+        );
+
+        expect(result).toEqual("Hello World!");
+      });
+    });
+
+    describe("generateHyperlink", () => {
+      it("should generate a hyperlink", () => {
+        const generator = new LatexGenerator();
+
+        const result = generator.generate(
+          new HyperlinkNode(
+            new TextWrapperNode("Hello World!"),
+            "https://example.com"
+          )
+        );
+
+        expect(result).toEqual("\\href{https://example.com}{Hello World!}");
+      });
+    });
+
+    describe("generateParagraph", () => {
+      it("should generate a paragraph", () => {
+        const generator = new LatexGenerator();
+
+        const result = generator.generate(
+          new ParagraphNode(new TextWrapperNode("Hello World!"))
+        );
+
+        expect(result).toEqual("Hello World!\n\n");
+      });
+    });
+
+    describe("generateHeading", () => {
+      it("should generate a heading", () => {
+        const generator = new LatexGenerator();
+
+        const result = generator.generate(
+          new HeadingNode(1, new TextWrapperNode("Hello World!"))
+        );
+
+        expect(result).toEqual("\\section{Hello World!}");
+      });
+
+      it("should generate a subheading", () => {
+        const generator = new LatexGenerator();
+
+        const result = generator.generate(
+          new HeadingNode(2, new TextWrapperNode("Hello World!"))
+        );
+
+        expect(result).toEqual("\\subsection{Hello World!}");
+      });
+
+      it("should generate a subsubheading", () => {
+        const generator = new LatexGenerator();
+
+        const result = generator.generate(
+          new HeadingNode(3, new TextWrapperNode("Hello World!"))
+        );
+
+        expect(result).toEqual("\\subsubsection{Hello World!}");
+      });
+    });
+
+    describe("generateArgument", () => {
+      it("should generate an argument", () => {
+        const generator = new LatexGenerator();
+
+        const result = generator.generate(
+          new ArgumentNode(new TextWrapperNode("Hello World!"))
+        );
+
+        expect(result).toEqual("Hello World!");
+      });
+    });
+
+    describe("generateFormula", () => {
+      it("should generate a sqrt", () => {
+        const generator = new LatexGenerator();
+
+        const result = generator.generate(
+          new FormulaNode("sqrt", [
+            new ArgumentNode(new TextWrapperNode("Hello World!")),
+          ])
+        );
+
+        expect(result).toEqual("\\sqrt{Hello World!}");
+      });
+
+      it("should generate a frac", () => {
+        const generator = new LatexGenerator();
+
+        const result = generator.generate(
+          new FormulaNode("frac", [
+            new ArgumentNode(new TextWrapperNode("Hello World!")),
+            new ArgumentNode(new TextWrapperNode("Hello World!")),
+          ])
+        );
+
+        expect(result).toEqual("\\frac{Hello World!}{Hello World!}");
+      });
+
+      it("should generate a 3 part sum", () => {
+        const generator = new LatexGenerator();
+
+        const result = generator.generate(
+          new FormulaNode("sum", [
+            new ArgumentNode(new TextWrapperNode("Hello World!")),
+            new ArgumentNode(new TextWrapperNode("Hello World!")),
+            new ArgumentNode(new TextWrapperNode("Hello World!")),
+          ])
+        );
+
+        expect(result).toEqual(
+          "\\sum_{Hello World!}^{Hello World!}{Hello World!}"
+        );
+      });
+
+      it("should generate a 2 part sum", () => {
+        const generator = new LatexGenerator();
+
+        const result = generator.generate(
+          new FormulaNode("sum", [
+            new ArgumentNode(new TextWrapperNode("Hello World!")),
+            new ArgumentNode(new TextWrapperNode("Hello World!")),
+          ])
+        );
+
+        expect(result).toEqual("\\sum_{Hello World!}^{Hello World!}");
+      });
     });
   });
 });
