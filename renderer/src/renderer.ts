@@ -60,8 +60,8 @@ export class Renderer {
       html: true,
     });
 
-    await this.cache.insertHTML(requested, result.html!);
-    await this.cache.insertCSS(requested, result.css!);
+    await this.cache.insertHTML(requested, result.html! ?? "");
+    await this.cache.insertCSS(requested, result.css ?? "");
 
     return result.css!;
   }
