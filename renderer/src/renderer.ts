@@ -1,5 +1,8 @@
 import { TypesetInput, TypesetOutput, typeset } from "mathjax-node";
 import { Cache } from "./cache";
+import sharp from "sharp";
+import fs from "fs-extra";
+import path from "path";
 
 export function render(input: TypesetInput) {
   return new Promise<TypesetOutput>((resolve, reject) => {
@@ -17,19 +20,39 @@ export class Renderer {
   constructor(readonly cache: Cache) {}
 
   public async renderPNG(requested: string) {
-    const cached = await this.cache.getPNG(requested);
+    const svgPath = await this.svgPath(requested);
+    const pngPath = await this.cache.pathForPNG(requested);
 
-    if (cached) return cached;
+    await fs.ensureDir(path.dirname(pngPath));
 
-    const result = await render({
-      math: requested,
-      format: "TeX",
-      svg: true,
-    });
+    await sharp(svgPath).resize(1000).png().toFile(pngPath);
 
-    const svg = result.svg;
+    return await fs.readFile(pngPath);
+  }
 
-    throw new Error("Not implemented");
+  public async pngPath(requested: string) {
+    await this.renderPNG(requested);
+    return this.cache.pathForPNG(requested);
+  }
+
+  public async renderJPEG(requested: string) {
+    const svgPath = await this.svgPath(requested);
+    const jpegPath = await this.cache.pathForJPEG(requested);
+
+    await fs.ensureDir(path.dirname(jpegPath));
+
+    await sharp(svgPath)
+      .resize(1000)
+      .flatten({ background: "#ffffff" })
+      .jpeg()
+      .toFile(jpegPath);
+
+    return await fs.readFile(jpegPath);
+  }
+
+  public async jpegPath(requested: string) {
+    await this.renderJPEG(requested);
+    return this.cache.pathForJPEG(requested);
   }
 
   public async renderHTML(requested: string) {
@@ -49,6 +72,11 @@ export class Renderer {
     return result.html!;
   }
 
+  public async htmlPath(requested: string) {
+    await this.renderHTML(requested);
+    return this.cache.pathForHTML(requested);
+  }
+
   public async renderCSS(requested: string) {
     const cached = await this.cache.getCSS(requested);
 
@@ -66,6 +94,11 @@ export class Renderer {
     return result.css!;
   }
 
+  public async cssPath(requested: string) {
+    await this.renderCSS(requested);
+    return this.cache.pathForCSS(requested);
+  }
+
   public async renderSVG(requested: string) {
     const cached = await this.cache.getSVG(requested);
 
@@ -80,6 +113,11 @@ export class Renderer {
     await this.cache.insertSVG(requested, result.svg!);
 
     return result.svg!;
+  }
+
+  public async svgPath(requested: string) {
+    await this.renderSVG(requested);
+    return this.cache.pathForSVG(requested);
   }
 
   static async create(cachePath: string) {

@@ -69,7 +69,7 @@ type SearchTree<T> = ReturnType<typeof searchTree<T>>;
 
 interface CacheEntry {
   requested: string;
-  pngPath?: string;
+  jpgPath?: string;
   svgPath?: string;
   htmlPath?: string;
   cssPath?: string;
@@ -106,7 +106,22 @@ export class Cache {
 
     const entry = this.entryFor(requested);
 
-    entry.pngPath = pngPath;
+    entry.jpgPath = pngPath;
+    this.searchTree.insert(requested, entry);
+    await this.save();
+  }
+
+  async insertJPEG(requested: string, jpegContents: Buffer) {
+    const hash = hashName(requested);
+
+    const jpegPath = cachePath(this.path, hash, "jpeg");
+
+    await fs.ensureDirSync(dirname(jpegPath));
+    await fs.writeFile(jpegPath, jpegContents);
+
+    const entry = this.entryFor(requested);
+
+    entry.jpgPath = jpegPath;
     this.searchTree.insert(requested, entry);
     await this.save();
   }
@@ -158,9 +173,16 @@ export class Cache {
 
   async getPNG(requested: string): Promise<Buffer | undefined> {
     const entry = this.searchTree.get(requested);
-    if (entry === undefined || entry.pngPath === undefined) return undefined;
+    if (entry === undefined || entry.jpgPath === undefined) return undefined;
 
-    return await fs.readFile(entry.pngPath);
+    return await fs.readFile(entry.jpgPath);
+  }
+
+  async getJPEG(requested: string): Promise<Buffer | undefined> {
+    const entry = this.searchTree.get(requested);
+    if (entry === undefined || entry.jpgPath === undefined) return undefined;
+
+    return await fs.readFile(entry.jpgPath);
   }
 
   async getSVG(requested: string): Promise<string | undefined> {
@@ -198,6 +220,31 @@ export class Cache {
       ? await fs.readJSON(cacheFile)
       : {};
     return new Cache(path, treeLayers, cached);
+  }
+
+  public pathForHTML(requested: string) {
+    const entry = this.searchTree.get(requested);
+    return entry?.htmlPath ?? cachePath(this.path, hashName(requested), "html");
+  }
+
+  public pathForCSS(requested: string) {
+    const entry = this.searchTree.get(requested);
+    return entry?.cssPath ?? cachePath(this.path, hashName(requested), "css");
+  }
+
+  public pathForSVG(requested: string) {
+    const entry = this.searchTree.get(requested);
+    return entry?.svgPath ?? cachePath(this.path, hashName(requested), "svg");
+  }
+
+  public pathForPNG(requested: string) {
+    const entry = this.searchTree.get(requested);
+    return entry?.jpgPath ?? cachePath(this.path, hashName(requested), "png");
+  }
+
+  public pathForJPEG(requested: string) {
+    const entry = this.searchTree.get(requested);
+    return entry?.jpgPath ?? cachePath(this.path, hashName(requested), "jpeg");
   }
 }
 

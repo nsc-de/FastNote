@@ -19,6 +19,34 @@ app.get("/formula/:formula/:format", (req, res) => {
   const formula = atob(req.params.formula);
   const format = req.params.format;
 
+  if (format === "png") {
+    (async () => {
+      try {
+        const result = await renderer.renderPNG(formula);
+        res.status(200).set("Content-Type", "image/png").send(result);
+      } catch (e) {
+        console.error(e);
+        res.status(500).send("Internal server error");
+      }
+    })();
+
+    return;
+  }
+
+  if (format === "jpg" || format === "jpeg") {
+    (async () => {
+      try {
+        const result = await renderer.renderJPEG(formula);
+        res.status(200).set("Content-Type", "image/jpeg").send(result);
+      } catch (e) {
+        console.error(e);
+        res.status(500).send("Internal server error");
+      }
+    })();
+
+    return;
+  }
+
   if (format === "svg") {
     (async () => {
       try {
