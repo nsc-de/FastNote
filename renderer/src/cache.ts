@@ -1,6 +1,7 @@
 import fs from "fs-extra";
-import path from "path";
+import { dirname, join } from "path";
 import crypto from "crypto";
+import { SavePromise } from "savepromise";
 
 export function get_helper<T>(
   path: string,
@@ -78,6 +79,11 @@ export class Cache {
   readonly searchTree: SearchTree<CacheEntry>;
   private requestsSave = false;
   private saving = false;
+
+  private cacheFile = SavePromise(async () => {
+    await fs.writeJSON(join(this.path, "cache.json"), this.searchTree.cache);
+  });
+
   constructor(
     readonly path: string,
     readonly treeLayers: number = 3,
@@ -87,21 +93,7 @@ export class Cache {
   }
 
   async save() {
-    if (this.saving) {
-      this.requestsSave = true;
-      return;
-    }
-
-    this.saving = true;
-    this.requestsSave = false;
-
-    await fs.writeJSON(
-      path.join(this.path, "cache.json"),
-      this.searchTree.cache
-    );
-
-    this.saving = false;
-    if (this.requestsSave) this.save();
+    await this.cacheFile.save();
   }
 
   async insertPNG(requested: string, pngContents: Buffer) {
@@ -109,14 +101,14 @@ export class Cache {
 
     const pngPath = cachePath(this.path, hash, "png");
 
-    await fs.ensureDirSync(path.dirname(pngPath));
+    await fs.ensureDirSync(dirname(pngPath));
     await fs.writeFile(pngPath, pngContents);
 
     const entry = this.entryFor(requested);
 
     entry.pngPath = pngPath;
     this.searchTree.insert(requested, entry);
-    this.save();
+    await this.save();
   }
 
   async insertSVG(requested: string, svgContents: string) {
@@ -124,14 +116,14 @@ export class Cache {
 
     const svgPath = cachePath(this.path, hash, "svg");
 
-    await fs.ensureDirSync(path.dirname(svgPath));
+    await fs.ensureDirSync(dirname(svgPath));
     await fs.writeFile(svgPath, svgContents);
 
     const entry = this.entryFor(requested);
 
     entry.svgPath = svgPath;
     this.searchTree.insert(requested, entry);
-    this.save();
+    await this.save();
   }
 
   async insertHTML(requested: string, htmlContents: string) {
@@ -139,14 +131,14 @@ export class Cache {
 
     const htmlPath = cachePath(this.path, hash, "html");
 
-    await fs.ensureDirSync(path.dirname(htmlPath));
+    await fs.ensureDirSync(dirname(htmlPath));
     await fs.writeFile(htmlPath, htmlContents);
 
     const entry = this.entryFor(requested);
 
     entry.htmlPath = htmlPath;
     this.searchTree.insert(requested, entry);
-    this.save();
+    await this.save();
   }
 
   async insertCSS(requested: string, cssContents: string) {
@@ -154,14 +146,14 @@ export class Cache {
 
     const cssPath = cachePath(this.path, hash, "css");
 
-    await fs.ensureDirSync(path.dirname(cssPath));
+    await fs.ensureDirSync(dirname(cssPath));
     await fs.writeFile(cssPath, cssContents);
 
     const entry = this.entryFor(requested);
 
     entry.cssPath = cssPath;
     this.searchTree.insert(requested, entry);
-    this.save();
+    await this.save();
   }
 
   async getPNG(requested: string): Promise<Buffer | undefined> {
@@ -216,5 +208,5 @@ function cachePath(root: string, hash: string, cacheType: string) {
     hash.slice(4), // rest of hash
   ];
 
-  return path.join(...pathParts);
+  return join(...pathParts);
 }

@@ -234,31 +234,55 @@ describe("Cache", () => {
     cache = new Cache(cachePath, 3);
   });
 
-  describe("insertPNG", () => {
-    it("should insert png file", () => {
+  describe("png", () => {
+    it("should insert png file", async () => {
       const data = Buffer.from("test");
-      cache.insertPNG("test", data);
+      await cache.insertPNG("test", data);
+    });
+
+    it("should get png file", async () => {
+      const data = Buffer.from("test");
+      await cache.insertPNG("test2", data);
+      await expect(cache.getPNG("test2")).resolves.toEqual(data);
     });
   });
 
-  describe("insertSVG", () => {
-    it("should insert svg file", () => {
+  describe("svg", () => {
+    it("should insert svg file", async () => {
       const data = "<svg></svg>";
-      cache.insertSVG("test", data);
+      await cache.insertSVG("test", data);
+    });
+
+    it("should get svg file", async () => {
+      const data = "<svg></svg>";
+      await cache.insertSVG("test2", data);
+      await expect(cache.getSVG("test2")).resolves.toEqual(data);
     });
   });
 
   describe("insertHTML", () => {
-    it("should insert json file", () => {
+    it("should insert html file", async () => {
       const data = "<html></html>";
-      cache.insertHTML("test", data);
+      await cache.insertHTML("test", data);
+    });
+
+    it("should get json file", async () => {
+      const data = "<html></html>";
+      await cache.insertHTML("test2", data);
+      await expect(cache.getHTML("test2")).resolves.toEqual(data);
     });
   });
 
   describe("insertCSS", () => {
-    it("should insert css file", () => {
+    it("should insert css file", async () => {
       const data = "body { color: red; }";
       cache.insertCSS("test", data);
+    });
+
+    it("should get css file", async () => {
+      const data = "body { color: red; }";
+      await cache.insertCSS("test2", data);
+      await expect(cache.getCSS("test2")).resolves.toEqual(data);
     });
   });
 
