@@ -191,6 +191,14 @@ export class Cache {
       }
     );
   }
+
+  public static async create(path: string, treeLayers: number = 3) {
+    const cacheFile = join(path, "cache.json");
+    const cached = (await fs.pathExists(cacheFile))
+      ? await fs.readJSON(cacheFile)
+      : {};
+    return new Cache(path, treeLayers, cached);
+  }
 }
 
 function hashName(it: string) {
